@@ -19,4 +19,4 @@ RUN yo hubot --owner="${HUBOT_OWNER}" --name="${HUBOT_NAME}" --description="${HU
 
 VOLUME ["/home/hubot/scripts"]
 
-CMD bin/hubot -n $HUBOT_NAME --adapter telegram
+CMD bin/hubot -n $HUBOT_NAME --adapter telegram-better
