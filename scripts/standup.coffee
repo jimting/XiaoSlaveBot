@@ -8,7 +8,7 @@
 #   hubot 刪除所有提醒 - 刪除所有提醒事項。
 
 
-cronJob = require('cron').CronJob
+cronJob = require('node-cron').CronJob
 _ = require('underscore')
 
 module.exports = (robot) ->
