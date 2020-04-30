@@ -1,4 +1,4 @@
-FROM xiao_slave_bot:latest
+FROM node:latest
 
 # Environment variables
 ENV DEBIAN_FRONTEND noninteractive
