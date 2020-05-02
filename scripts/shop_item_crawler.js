@@ -64,10 +64,10 @@ module.exports = function(robot)
 		
 		//拿到所有schedule
 		schedules = getSchedule(room);
-		for(var i = 0;i < schedules.length; i++)
+		/*for(var i = 0;i < schedules.length; i++)
 		{
 			response.send(schedules[i].keywords);
-		}
+		}*/
 		
     });
 }
@@ -115,7 +115,7 @@ function getSchedule(room)
 	connection.connect();
 	 
 	var sql = 'SELECT * FROM schedule where room='+room;
-	//查
+	//查尋指令
 	connection.query(sql,function (err, result) {
 			if(err){
 			  console.log('[SELECT ERROR] - ',err.message);
