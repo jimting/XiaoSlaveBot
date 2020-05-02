@@ -52,7 +52,7 @@ module.exports = function(robot)
 		response.reply("追蹤「"+keywords+"」成功！之後每個整點將會為你查詢最新商品與任何價格變動趨勢。");
 		
 		//將追蹤動作加到資料庫的schedule之中
-		addSchedule(keywords, room);
+		addSchedule(room, keywords);
     });
 	
 	robot.respond(/(追蹤清單)/, function(response) 
@@ -66,9 +66,24 @@ module.exports = function(robot)
 		schedules = getSchedule(room, robot);
 		
     });
+	
+	robot.respond(/(取消追蹤)\s(.*)/, function(response) 
+    {
+		//拿到關鍵字
+		var keywords = response.match[2]; 
+		//拿到房間號碼
+		var room = response.envelope.room;
+		
+		//我直接就不爽了 把他刪掉
+		deleteSchedule(room, keywords);
+		
+		response.reply("取消追蹤「"+keywords+"」成功。");
+		
+		
+    });
 }
 
-function addSchedule(keywords, room)
+function addSchedule(room, keywords)
 {
 	var connection = mysql.createConnection({     
 		host     : db_server,       
@@ -125,10 +140,41 @@ function getSchedule(room, robot)
 		console.log('------------------------------------------------------------\n\n');  
 		var json_data = JSON.parse(JSON.stringify(result));
 		console.log(json_data);
+		var schedules == "";
 		for(var i = 0;i < json_data.length; i++)
 		{
-			robot.messageRoom(room, json_data[i].keyword);
+			schedules += json_data[i].keyword + "\n";
 		}
+		robot.messageRoom(room, schedules);
+	});
+	 
+	connection.end();
+}
+
+function deleteSchedule(room, keywords)
+{
+	var connection = mysql.createConnection({     
+		host     : db_server,       
+		user     : db_user,              
+		password : db_passwd,       
+		port: '3306',                   
+		database: db_name 
+	}); 
+	 
+	connection.connect();
+	 
+	var delSql = 'DELETE FROM schedule where room=' + room + ' and keyword=' + keywords;
+	//查尋指令
+	connection.query(delSql,function (err, result) {
+		if(err)
+		{
+			console.log('[DELETE ERROR] - ',err.message);
+			return;
+		}
+		 
+		console.log('--------------------------DELETE----------------------------');
+		console.log('DELETE affectedRows',result.affectedRows);
+		console.log('-----------------------------------------------------------------\n\n'); 
 	});
 	 
 	connection.end();
