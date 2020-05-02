@@ -63,11 +63,7 @@ module.exports = function(robot)
 		response.reply("以下為此聊天室中的所有追蹤清單：");
 		
 		//拿到所有schedule
-		schedules = getSchedule(room);
-		/*for(var i = 0;i < schedules.length; i++)
-		{
-			response.send(schedules[i].keywords);
-		}*/
+		schedules = getSchedule(room, response);
 		
     });
 }
@@ -102,7 +98,7 @@ function addSchedule(keywords, room)
 	connection.end();
 }
 
-function getSchedule(room)
+function getSchedule(room, response)
 {
 	var connection = mysql.createConnection({     
 	  host     : db_server,       
@@ -125,7 +121,11 @@ function getSchedule(room)
 		   console.log('--------------------------SELECT----------------------------');
 		   console.log(result);
 		   console.log('------------------------------------------------------------\n\n');  
-		   return result;
+		   
+			for(var i = 0;i < result.length; i++)
+			{
+				response.send(result[i].keywords);
+			}
 	});
 	 
 	connection.end();
