@@ -163,7 +163,7 @@ function deleteSchedule(room, keywords)
 	 
 	connection.connect();
 	 
-	var delSql = 'DELETE FROM schedule where room=' + room + ' and keyword=' + keywords;
+	var delSql = 'DELETE FROM schedule where room="' + room + '" and keyword="' + keywords + '"';
 	//查尋指令
 	connection.query(delSql,function (err, result) {
 		if(err)
