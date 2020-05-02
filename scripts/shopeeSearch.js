@@ -18,9 +18,9 @@ module.exports = function(robot)
 			if (!error && res.statusCode == 200) 
 			{
 				// parse the ' to ", because Rasa always return json with '
-				response.reply(body);
+				robot.messageRoom(response.room, message);
 				//var json_data = JSON.parse((body[0].text));
-				
+				console.log(body);
 			}
 			if(error)
 			{
