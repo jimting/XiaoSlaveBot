@@ -121,10 +121,10 @@ function getSchedule(room, response)
 		   console.log('--------------------------SELECT----------------------------');
 		   console.log(result);
 		   console.log('------------------------------------------------------------\n\n');  
-		   
-			for(var i = 0;i < result.length; i++)
+		   var json_data = JSON.parse(JSON.stringify(result));
+			for(var i = 0;i < json_data.length; i++)
 			{
-				response.send(result[i].keywords);
+				response.send(json_data[i].keywords);
 			}
 	});
 	 
