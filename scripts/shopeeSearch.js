@@ -6,7 +6,7 @@ module.exports = function(robot)
 		//response.reply(match);
 		
 		var keywords = response.match[2]; 
-		var url = uri: process.env.rootURL + ':4101/shopeeCrawler?keywords=';
+		var url = process.env.rootURL + ':4101/shopeeCrawler?keywords=';
 		// do the search func.
 		var request = require('request');
 		var options = {
