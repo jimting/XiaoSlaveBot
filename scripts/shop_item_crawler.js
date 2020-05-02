@@ -63,7 +63,7 @@ module.exports = function(robot)
 		response.reply("以下為此聊天室中的所有追蹤清單：");
 		
 		//拿到所有schedule
-		schedules = getSchedule(room, response);
+		schedules = getSchedule(room, robot);
 		
     });
 }
