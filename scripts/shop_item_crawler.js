@@ -4,16 +4,23 @@ var db_server = process.env.db_server;
 var db_user = process.env.db_user;
 var db_passwd = process.env.db_passwd;
 var db_name = process.env.db_name;
+var crawler_url = process.env.crawler_url;
+
+//for rabbitmq
+var MQserver = process.env.rabbitmq;
+var rabbitmq = require('rabbit.js').createContext(MQserver);
+
 
 module.exports = function(robot) 
 {
+	//主動下搜尋關鍵字指令，ifNotify=True
     robot.respond(/(搜尋)(.*)/, function(response) 
     {
 		//拿到關鍵字
 		var keywords = response.match[2]; 
 		
 		//設定好搜尋的url
-		var url = process.env.rootURL + ':4101/shopeeCrawler?keywords='+keywords;
+		var url = crawler_url + ':4101/shopeeCrawler?keywords='+keywords;
 		var encoded_url = encodeURI(url);
 		
 		response.reply("好的！開始搜尋「"+keywords+"」！");
@@ -25,14 +32,8 @@ module.exports = function(robot)
 		{
 			if (!error && res.statusCode == 200) 
 			{
-				// 將拿到的最新結果進行分析與儲存，並回覆有更動的資料
-				var result = analyseResult(body);
-				for(var i = 0;i < result.length; i++)
-				{
-					robot.messageRoom(room, body);
-				}
-				//var json_data = JSON.parse((body[0].text));
-				console.log(room);
+				// 將拿到的最新結果進行分析與儲存，並將有更動的資料加到MessageQueue上。
+				analyseSearchResult(body, keywords);
 			}
 			if(error)
 			{
@@ -42,6 +43,7 @@ module.exports = function(robot)
 		});
     });
 	
+	//加入一筆資料到追蹤清單中，並觸發背景deepSearch取得當下最新資料存到Database當中
 	robot.respond(/(追蹤)\s(.*)/, function(response) 
     {
 		//拿到關鍵字
@@ -55,6 +57,7 @@ module.exports = function(robot)
 		addSchedule(room, keywords);
     });
 	
+	//嗯？就列出清單，有問題嗎？
 	robot.respond(/(追蹤清單)/, function(response) 
     {
 		//拿到房間號碼
@@ -62,16 +65,12 @@ module.exports = function(robot)
 		
 		response.reply("以下為此聊天室中的所有追蹤清單：");
 		
-		//拿到所有schedule
+		//拿到所有schedule，並列出。
 		schedules = getSchedule(room, robot);
-		var result = "";
-		for(var i = 0;i < schedules.length; i++)
-		{
-			result += schedules[i].keyword + "\n";
-		}
-		robot.messageRoom(room, result);
+		
     });
 	
+	//就把一筆追蹤資料刪除，很簡單的。
 	robot.respond(/(取消追蹤)\s(.*)/, function(response) 
     {
 		//拿到關鍵字
@@ -88,6 +87,7 @@ module.exports = function(robot)
     });
 }
 
+//新增一筆資料到追蹤清單中
 function addSchedule(room, keywords)
 {
 	var connection = mysql.createConnection({     
@@ -119,6 +119,7 @@ function addSchedule(room, keywords)
 	connection.end();
 }
 
+//拿到追蹤清單
 function getSchedule(room, robot)
 {
 	var connection = mysql.createConnection({     
@@ -145,12 +146,18 @@ function getSchedule(room, robot)
 		console.log('------------------------------------------------------------\n\n');  
 		var json_data = JSON.parse(JSON.stringify(result));
 		console.log(json_data);
-		return json_data;
+		var schedules = "";
+		for(var i = 0;i < json_data.length; i++)
+		{
+			schedules += json_data[i].keyword + "\n";
+		}
+		robot.messageRoom(room, schedules);
 	});
 	 
 	connection.end();
 }
 
+//把一筆追蹤資料刪掉
 function deleteSchedule(room, keywords)
 {
 	var connection = mysql.createConnection({     
@@ -180,17 +187,17 @@ function deleteSchedule(room, keywords)
 	connection.end();
 }
 
-function analyseResult(json)
+//把查到的結果丟去新增，如果新增失敗就更新(代表裡面已經有這筆資料惹)
+function analyseSearchResult(data_json, keywords)
 {
-	
+	for (i in data_json) 
+	{
+		newItem(data_json[i], true, keywords);
+	} 
 }
 
-function getItemByLink(link)
-{
-	
-}
-
-function newItem(item_json)
+//新增Item物件
+function newItem(item_json, ifNotify, keywords)
 {
 	var connection = mysql.createConnection({     
 		host     : db_server,       
@@ -201,27 +208,32 @@ function newItem(item_json)
 	}); 
 	 
 	connection.connect();
-	 
-	var  addSql = 'INSERT INTO schedule(room, keyword) VALUES(?, ?)';
-	var  addSqlParams = [room, keywords];
+
+	var  addSql = 'INSERT INTO item(name, link, img, sales_volume, price, monthly_revenue, review, ad, ) VALUES(?, ?, ?, ?, ?, ?, ?, ?)';
+	var  addSqlParams = [item_json.name, item_json.link, item_json.img, item_json.sales_volume, item_json.price, item_json.monthly_revenue, item_json.review, item_json.ad];
 	// 新增Schedule內容
 	connection.query(addSql,addSqlParams,function (err, result) {
 		if(err)
 		{
+			//加不了代表 它 存在了。(怕爆
+			updateItem(item_json, ifNotify, keywords);
 			console.log('[INSERT ERROR] - ',err.message);
 			return;
 		}        
-	 
+		
 		console.log('--------------------------INSERT----------------------------');
 		//console.log('INSERT ID:',result.insertId);        
 		console.log('INSERT ID:',result);        
 		console.log('-----------------------------------------------------------------\n\n');  
+		if(ifNotify)
+			itemInsertNotify(item_json);
 	});
 	 
 	connection.end();
 }
 
-function updateItem(item_json)
+//更新Item物件
+function updateItem(item_json, ifNotify, keywords)
 {
 	var connection = mysql.createConnection({     
 		host     : db_server,       
@@ -233,19 +245,75 @@ function updateItem(item_json)
 	 
 	connection.connect();
 	 
-	var delSql = 'DELETE FROM schedule where room="' + room + '" and keyword="' + keywords + '"';
+	var modSql = 'UPDATE item SET name=?, img=?, sales_volume=?, price=?, monthly_revenue=?, review=?, ad=?';
+	var modSqlParams = [item_json.name, item_json.img, item_json.sales_volume, item_json.price, item_json.monthly_revenue, item_json.review, item_json.ad];
 	//查尋指令
-	connection.query(delSql,function (err, result) {
+	connection.query(modSql,function (err, result) {
 		if(err)
 		{
-			console.log('[DELETE ERROR] - ',err.message);
+			console.log('[UPDATE ERROR] - ',err.message);
 			return;
 		}
 		 
-		console.log('--------------------------DELETE----------------------------');
-		console.log('DELETE affectedRows',result.affectedRows);
+		console.log('--------------------------UPDATE----------------------------');
+		console.log('UPDATE affectedRows',result.affectedRows);
 		console.log('-----------------------------------------------------------------\n\n'); 
+		itemUpdateKeywords(item_json, ifNotify, keywords);
 	});
 	 
 	connection.end();
+}
+
+//更新物件中的keywords, 方便追蹤。
+function itemUpdateKeywords(item_json, ifNotify, keywords)
+{
+	var connection = mysql.createConnection({     
+		host     : db_server,       
+		user     : db_user,              
+		password : db_passwd,       
+		port: '3306',                   
+		database: db_name 
+	}); 
+	 
+	connection.connect();
+	
+	var modSql = 'UPDATE item SET keywords=JSON_ARRAY_APPEND(new, "$", ?) WHERE link=? AND NOT JSON_CONTAINS(keywords, ?)';
+	var modSqlParams = [keywords, item_json.link, keywords];
+	//查尋指令
+	connection.query(modSql,function (err, result) {
+		if(err)
+		{
+			console.log('[UPDATE ERROR] - ',err.message);
+			return;
+		}
+		 
+		console.log('--------------------------UPDATE----------------------------');
+		console.log('UPDATE affectedRows',result.affectedRows);
+		console.log('-----------------------------------------------------------------\n\n'); 
+		if(ifNotify)
+			itemUpdateNotify(item_json);
+	});
+	 
+	connection.end();
+}
+
+//推通知訊息到MessageQueue
+function itemUpdateNotify(item_json)
+{
+	var pub = rabbitmq.socket('PUBLISH');
+	pub.connect('itemUpdate', function() 
+	{
+		item_json.keyword = 
+		pub.write(JSON.stringify(item_json), "utf-8");
+	});
+}
+
+//推通知訊息到MessageQueue
+function itemInsertNotify(item_json)
+{
+	var pub = rabbitmq.socket('PUBLISH');
+	pub.connect('itemInsert', function() 
+	{
+		pub.write(JSON.stringify(item_json), "utf-8");
+	});
 }
