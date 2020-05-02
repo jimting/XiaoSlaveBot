@@ -114,10 +114,9 @@ function getSchedule(room)
 	 
 	connection.connect();
 	 
-	var sql = 'SELECT * FROM schedule where room=?';
-	var sqlParams = [room];
+	var sql = 'SELECT * FROM schedule where room='+room;
 	//查
-	connection.query(sql,sqlParams,function (err, result) {
+	connection.query(sql,function (err, result) {
 			if(err){
 			  console.log('[SELECT ERROR] - ',err.message);
 			  return;
