@@ -1,6 +1,6 @@
 module.exports = function(robot) 
 {
-    robot.respond(/(搜尋)\s(\S*)\s?(.*)?/, function(response) 
+    robot.respond(/(搜尋)\s(.*)/, function(response) 
     {
 		var match = response.match;
 		response.reply(match);
