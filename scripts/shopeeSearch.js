@@ -6,15 +6,17 @@ module.exports = function(robot)
 		//response.reply(match);
 		
 		var keywords = response.match[2]; 
-		
+		var url = uri: process.env.rootURL + ':4101/shopeeCrawler?keywords=';
 		// do the search func.
 		var request = require('request');
 		var options = {
-		  uri: process.env.rootURL + ':4101/shopeeCrawler?keywords='+keywords,
+		  uri: url+keywords,
 		  method: 'POST'
 		};
 		
 		response.reply("好的！開始搜尋「"+keywords+"」！");
+		
+		response.reply("url:"+ url);
 		
 		request(options, function (error, res, body) 
 		{
