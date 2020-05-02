@@ -2,8 +2,8 @@ module.exports = function(robot)
 {
     robot.respond(/(搜尋)\s(\S*)\s?(.*)?/, function(response) 
     {
-		var result = data.text.match(command);
-		response.reply(result);
+		var match = response.match;
+		response.reply(match);
     });
 }
 
