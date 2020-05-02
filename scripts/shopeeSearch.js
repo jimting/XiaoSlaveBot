@@ -8,13 +8,12 @@ module.exports = function(robot)
 		var keywords = response.match[2]; 
 		var url = process.env.rootURL + ':4101/shopeeCrawler?keywords='+keywords;
 		// do the search func.
-		var request = require('request');
+		var encoded_url = encodeURI(url);
 		
 		response.reply("好的！開始搜尋「"+keywords+"」！");
 		
-		response.reply("url:"+ url);
-		
-		request(url, function(error, res, body) 
+		var request = require('request');
+		request(encoded_url, function(error, res, body) 
 		{
 			if (!error && res.statusCode == 200) 
 			{
