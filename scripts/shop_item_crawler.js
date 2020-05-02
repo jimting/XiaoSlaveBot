@@ -42,7 +42,7 @@ module.exports = function(robot)
 		});
     });
 	
-	robot.respond(/(追蹤)(.*)/, function(response) 
+	robot.respond(/(追蹤)\s(.*)/, function(response) 
     {
 		//拿到關鍵字
 		var keywords = response.match[2]; 
