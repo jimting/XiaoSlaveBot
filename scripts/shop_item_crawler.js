@@ -99,7 +99,7 @@ function addSchedule(keywords, room)
 	connection.end();
 }
 
-function getSchedule(room, response)
+function getSchedule(room, robot)
 {
 	var connection = mysql.createConnection({     
 		host     : db_server,       
@@ -126,7 +126,7 @@ function getSchedule(room, response)
 		var json_data = JSON.parse(JSON.stringify(result));
 		for(var i = 0;i < json_data.length; i++)
 		{
-			response.send(json_data[i].keywords);
+			robot.messageRoom(room, json_data[i].keywords);
 		}
 		console.log(json_data);
 	});
