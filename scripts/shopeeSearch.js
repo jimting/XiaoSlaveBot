@@ -11,7 +11,7 @@ module.exports = function(robot)
 		var request = require('request');
 		var options = {
 		  uri: process.env.rootURL + ':4101/shopeeCrawler?keywords='+keywords,
-		  method: 'GET'
+		  method: 'POST'
 		};
 		
 		response.reply("好的！開始搜尋「"+keywords+"」！");
