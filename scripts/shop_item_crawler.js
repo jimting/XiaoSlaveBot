@@ -64,7 +64,12 @@ module.exports = function(robot)
 		
 		//拿到所有schedule
 		schedules = getSchedule(room, robot);
-		
+		var result = "";
+		for(var i = 0;i < schedules.length; i++)
+		{
+			result += schedules[i].keyword + "\n";
+		}
+		robot.messageRoom(room, result);
     });
 	
 	robot.respond(/(取消追蹤)\s(.*)/, function(response) 
@@ -140,12 +145,7 @@ function getSchedule(room, robot)
 		console.log('------------------------------------------------------------\n\n');  
 		var json_data = JSON.parse(JSON.stringify(result));
 		console.log(json_data);
-		var schedules = "";
-		for(var i = 0;i < json_data.length; i++)
-		{
-			schedules += json_data[i].keyword + "\n";
-		}
-		robot.messageRoom(room, schedules);
+		return json_data;
 	});
 	 
 	connection.end();
@@ -192,10 +192,60 @@ function getItemByLink(link)
 
 function newItem(item_json)
 {
-	
+	var connection = mysql.createConnection({     
+		host     : db_server,       
+		user     : db_user,              
+		password : db_passwd,       
+		port: '3306',                   
+		database: db_name
+	}); 
+	 
+	connection.connect();
+	 
+	var  addSql = 'INSERT INTO schedule(room, keyword) VALUES(?, ?)';
+	var  addSqlParams = [room, keywords];
+	// 新增Schedule內容
+	connection.query(addSql,addSqlParams,function (err, result) {
+		if(err)
+		{
+			console.log('[INSERT ERROR] - ',err.message);
+			return;
+		}        
+	 
+		console.log('--------------------------INSERT----------------------------');
+		//console.log('INSERT ID:',result.insertId);        
+		console.log('INSERT ID:',result);        
+		console.log('-----------------------------------------------------------------\n\n');  
+	});
+	 
+	connection.end();
 }
 
 function updateItem(item_json)
 {
-	
+	var connection = mysql.createConnection({     
+		host     : db_server,       
+		user     : db_user,              
+		password : db_passwd,       
+		port: '3306',                   
+		database: db_name 
+	}); 
+	 
+	connection.connect();
+	 
+	var delSql = 'DELETE FROM schedule where room="' + room + '" and keyword="' + keywords + '"';
+	//查尋指令
+	connection.query(delSql,function (err, result) {
+		if(err)
+		{
+			console.log('[DELETE ERROR] - ',err.message);
+			return;
+		}
+		 
+		console.log('--------------------------DELETE----------------------------');
+		console.log('DELETE affectedRows',result.affectedRows);
+		console.log('-----------------------------------------------------------------\n\n'); 
+	});
+	 
+	connection.end();
 }
