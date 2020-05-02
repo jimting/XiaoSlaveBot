@@ -6,8 +6,6 @@ ENV HUBOT_NAME xiao_slave_bot
 ENV HUBOT_OWNER jt
 ENV HUBOT_DESCRIPTION Hubot
 
-RUN useradd hubot -m
-
 RUN npm install -g hubot coffee-script yo generator-hubot
 
 USER hubot
