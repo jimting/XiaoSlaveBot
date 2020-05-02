@@ -140,7 +140,7 @@ function getSchedule(room, robot)
 		console.log('------------------------------------------------------------\n\n');  
 		var json_data = JSON.parse(JSON.stringify(result));
 		console.log(json_data);
-		var schedules == "";
+		var schedules = "";
 		for(var i = 0;i < json_data.length; i++)
 		{
 			schedules += json_data[i].keyword + "\n";
