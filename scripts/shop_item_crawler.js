@@ -46,13 +46,29 @@ module.exports = function(robot)
     {
 		//拿到關鍵字
 		var keywords = response.match[2]; 
-		//拿到房間名稱
+		//拿到房間號碼
 		var room = response.envelope.room;
 		
 		response.reply("追蹤「"+keywords+"」成功！之後每個整點將會為你查詢最新商品與任何價格變動趨勢。");
 		
 		//將追蹤動作加到資料庫的schedule之中
 		addSchedule(keywords, room);
+    });
+	
+	robot.respond(/(追蹤清單)/, function(response) 
+    {
+		//拿到房間號碼
+		var room = response.envelope.room;
+		
+		response.reply("以下為此聊天室中的所有追蹤清單：");
+		
+		//拿到所有schedule
+		schedules = getSchedule(room);
+		for(var i = 0;i < schedules.length; i++)
+		{
+			response.send(schedules[i].keywords);
+		}
+		
     });
 }
 
@@ -81,6 +97,36 @@ function addSchedule(keywords, room)
 		   //console.log('INSERT ID:',result.insertId);        
 		   console.log('INSERT ID:',result);        
 		   console.log('-----------------------------------------------------------------\n\n');  
+	});
+	 
+	connection.end();
+}
+
+function getSchedule(room)
+{
+	var connection = mysql.createConnection({     
+	  host     : db_server,       
+	  user     : db_user,              
+	  password : db_passwd,       
+	  port: '3306',                   
+	  database: db_name 
+	}); 
+	 
+	connection.connect();
+	 
+	var sql = 'SELECT * FROM schedule where room=?';
+	var sqlParams = [room];
+	//查
+	connection.query(sql,sqlParams,function (err, result) {
+			if(err){
+			  console.log('[SELECT ERROR] - ',err.message);
+			  return;
+			}
+	 
+		   console.log('--------------------------SELECT----------------------------');
+		   console.log(result);
+		   console.log('------------------------------------------------------------\n\n');  
+		   return result;
 	});
 	 
 	connection.end();
