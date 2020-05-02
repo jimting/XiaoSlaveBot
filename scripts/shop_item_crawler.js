@@ -124,11 +124,11 @@ function getSchedule(room, robot)
 		console.log(result);
 		console.log('------------------------------------------------------------\n\n');  
 		var json_data = JSON.parse(JSON.stringify(result));
+		console.log(json_data);
 		for(var i = 0;i < json_data.length; i++)
 		{
-			robot.messageRoom(room, json_data[i].keywords);
+			robot.messageRoom(room, json_data[i].keyword);
 		}
-		console.log(json_data);
 	});
 	 
 	connection.end();
