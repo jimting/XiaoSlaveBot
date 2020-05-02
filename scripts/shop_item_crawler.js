@@ -71,11 +71,11 @@ module.exports = function(robot)
 function addSchedule(keywords, room)
 {
 	var connection = mysql.createConnection({     
-	  host     : db_server,       
-	  user     : db_user,              
-	  password : db_passwd,       
-	  port: '3306',                   
-	  database: db_name
+		host     : db_server,       
+		user     : db_user,              
+		password : db_passwd,       
+		port: '3306',                   
+		database: db_name
 	}); 
 	 
 	connection.connect();
@@ -84,15 +84,16 @@ function addSchedule(keywords, room)
 	var  addSqlParams = [room, keywords];
 	// 新增Schedule內容
 	connection.query(addSql,addSqlParams,function (err, result) {
-			if(err){
-			 console.log('[INSERT ERROR] - ',err.message);
-			 return;
-			}        
+		if(err)
+		{
+			console.log('[INSERT ERROR] - ',err.message);
+			return;
+		}        
 	 
-		   console.log('--------------------------INSERT----------------------------');
-		   //console.log('INSERT ID:',result.insertId);        
-		   console.log('INSERT ID:',result);        
-		   console.log('-----------------------------------------------------------------\n\n');  
+		console.log('--------------------------INSERT----------------------------');
+		//console.log('INSERT ID:',result.insertId);        
+		console.log('INSERT ID:',result);        
+		console.log('-----------------------------------------------------------------\n\n');  
 	});
 	 
 	connection.end();
@@ -101,11 +102,11 @@ function addSchedule(keywords, room)
 function getSchedule(room, response)
 {
 	var connection = mysql.createConnection({     
-	  host     : db_server,       
-	  user     : db_user,              
-	  password : db_passwd,       
-	  port: '3306',                   
-	  database: db_name 
+		host     : db_server,       
+		user     : db_user,              
+		password : db_passwd,       
+		port: '3306',                   
+		database: db_name 
 	}); 
 	 
 	connection.connect();
@@ -113,19 +114,21 @@ function getSchedule(room, response)
 	var sql = 'SELECT * FROM schedule where room='+room;
 	//查尋指令
 	connection.query(sql,function (err, result) {
-			if(err){
-			  console.log('[SELECT ERROR] - ',err.message);
-			  return;
-			}
-	 
-		   console.log('--------------------------SELECT----------------------------');
-		   console.log(result);
-		   console.log('------------------------------------------------------------\n\n');  
-		   var json_data = JSON.parse(JSON.stringify(result));
-			for(var i = 0;i < json_data.length; i++)
-			{
-				response.send(json_data[i].keywords);
-			}
+		if(err)
+		{
+			console.log('[SELECT ERROR] - ',err.message);
+			return;
+		}
+		 
+		console.log('--------------------------SELECT----------------------------');
+		console.log(result);
+		console.log('------------------------------------------------------------\n\n');  
+		var json_data = JSON.parse(JSON.stringify(result));
+		for(var i = 0;i < json_data.length; i++)
+		{
+			response.send(json_data[i].keywords);
+		}
+		console.log(json_data);
 	});
 	 
 	connection.end();
