@@ -13,12 +13,13 @@ module.exports = function(robot)
 		response.reply("好的！開始搜尋「"+keywords+"」！");
 		console.log(response.envelope);
 		var request = require('request');
+		var room = response.envelope.room;
 		request(encoded_url, function(error, res, body) 
 		{
 			if (!error && res.statusCode == 200) 
 			{
 				// parse the ' to ", because Rasa always return json with '
-				robot.messageRoom(response.envelope.room, body);
+				robot.messageRoom(room, body);
 				//var json_data = JSON.parse((body[0].text));
 			}
 			if(error)
