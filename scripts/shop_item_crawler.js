@@ -236,6 +236,8 @@ function newItem(item_json, ifNotify, keywords)
 //更新Item物件
 function updateItem(item_json, ifNotify, keywords)
 {
+	console.log("將此Json寫入資料庫："+item_json);
+	
 	var connection = mysql.createConnection({     
 		host     : db_server,       
 		user     : db_user,              
@@ -252,7 +254,7 @@ function updateItem(item_json, ifNotify, keywords)
 	connection.query(modSql,function (err, result) {
 		if(err)
 		{
-			console.log('[UPDATE ERROR] - ',err.message);
+			//console.log('[UPDATE ERROR] - ',err.message);
 			return;
 		}
 		 
@@ -284,7 +286,7 @@ function itemUpdateKeywords(item_json, ifNotify, keywords)
 	connection.query(modSql,function (err, result) {
 		if(err)
 		{
-			console.log('[UPDATE ERROR] - ',err.message);
+			//console.log('[UPDATE ERROR] - ',err.message);
 			return;
 		}
 		 
