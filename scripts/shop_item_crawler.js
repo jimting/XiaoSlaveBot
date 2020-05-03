@@ -193,8 +193,7 @@ async function analyseSearchResult(data_json, keywords)
 {
 	for (i in data_json) 
 	{
-		newItem(data_json[i], true, keywords);
-		await delay(1);
+		await newItem(data_json[i], true, keywords);
 	} 
 }
 
