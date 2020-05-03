@@ -195,6 +195,7 @@ async function analyseSearchResult(data_json, keywords)
 	for (i in data_json) 
 	{
 		await newItem(data_json[i], true, keywords);
+		await new Promise(r => setTimeout(r, 50));
 	} 
 }
 
