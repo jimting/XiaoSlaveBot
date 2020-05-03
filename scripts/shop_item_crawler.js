@@ -32,9 +32,10 @@ module.exports = function(robot)
 		{
 			if (!error && res.statusCode == 200) 
 			{
+				json_data = JSON.parse(body);
 				// 將拿到的最新結果進行分析與儲存，並將有更動的資料加到MessageQueue上。
-				response.reply("總共搜尋到"+body.length+"筆商品資料。")
-				analyseSearchResult(JSON.parse(body), keywords);
+				response.reply("總共搜尋到"+json_data.length+"筆商品資料。")
+				analyseSearchResult(json_data, keywords);
 			}
 			if(error)
 			{
