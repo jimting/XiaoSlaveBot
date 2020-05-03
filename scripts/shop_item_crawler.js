@@ -20,7 +20,7 @@ module.exports = function(robot)
 		var keywords = response.match[2]; 
 		
 		//設定好搜尋的url
-		var url = crawler_url + ':4101/shopeeCrawler?keywords='+keywords;
+		var url = crawler_url + '/shopeeCrawler?keywords='+keywords;
 		var encoded_url = encodeURI(url);
 		
 		response.reply("好的！開始搜尋「"+keywords+"」！");
