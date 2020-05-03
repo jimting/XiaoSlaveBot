@@ -194,9 +194,45 @@ async function analyseSearchResult(data_json, keywords)
 {
 	for (i in data_json) 
 	{
-		await newItem(data_json[i], true, keywords);
+		var itemExistStatus = await ifItemExist(data_json[i].link)
+		if(itemExistStatus)
+			await newItem(data_json[i], true, keywords);
+		else
+			await newItem(data_json[i], true, keywords);
 		await new Promise(r => setTimeout(r, 50));
 	} 
+}
+//檢查Item是否在資料庫裡了，以link來判斷。
+function ifItemExist(link)
+{
+	var connection = mysql.createConnection({     
+		host     : db_server,       
+		user     : db_user,              
+		password : db_passwd,       
+		port: '3306',                   
+		database: db_name 
+	}); 
+	 
+	connection.connect();
+	 
+	var sql = 'SELECT * FROM item where link='+link;
+	//查尋指令
+	connection.query(sql,function (err, result) {
+		if(err)
+		{
+			console.log('[SELECT ERROR] - ',err.message);
+			return false;
+		}
+		 
+		console.log('--------------------------SELECT----------------------------');
+		console.log(result);
+		console.log('------------------------------------------------------------\n\n');  
+		var json_data = JSON.parse(JSON.stringify(result));
+		if(json_data.length > 0)
+			return true;
+		return false;
+	});
+	connection.end();
 }
 
 //新增Item物件
@@ -218,8 +254,6 @@ function newItem(item_json, ifNotify, keywords)
 	connection.query(addSql,addSqlParams,function (err, result) {
 		if(err)
 		{
-			//加不了代表 它 存在了。(怕爆
-			updateItem(item_json, ifNotify, keywords);
 			console.log('[INSERT ERROR] - ',err.message);
 			return;
 		}        
