@@ -189,11 +189,12 @@ function deleteSchedule(room, keywords)
 }
 
 //把查到的結果丟去新增，如果新增失敗就更新(代表裡面已經有這筆資料惹)
-function analyseSearchResult(data_json, keywords)
+async function analyseSearchResult(data_json, keywords)
 {
 	for (i in data_json) 
 	{
 		newItem(data_json[i], true, keywords);
+		await delay(1);
 	} 
 }
 
