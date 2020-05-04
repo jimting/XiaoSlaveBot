@@ -195,6 +195,7 @@ async function analyseSearchResult(data_json, keywords)
 	for (i in data_json) 
 	{
 		var itemExistStatus = await ifItemExist(data_json[i].link)
+		await new Promise(r => setTimeout(r, 50));
 		if(itemExistStatus)
 			await newItem(data_json[i], true, keywords);
 		else
