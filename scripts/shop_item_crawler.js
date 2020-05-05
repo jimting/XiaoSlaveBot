@@ -200,13 +200,13 @@ async function analyseSearchResult(data_json, keywords)
 		{
 			console.log("=====正在將第"+i+"筆資料寫入資料庫=====");
 			await newItem(data_json[i], keywords);
-			itemInsertNotify(data_json[i]);
+			await itemInsertNotify(data_json[i]);
 		}
 		else
 		{
 			console.log("=====正在將第"+i+"筆資料更新進資料庫=====");
 			await updateItem(data_json[i], keywords);
-			itemUpdateNotify(data_json[i]);
+			await itemUpdateNotify(data_json[i]);
 		}
 		await new Promise(r => setTimeout(r, 50));
 	} 

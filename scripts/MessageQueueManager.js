@@ -46,7 +46,7 @@ function itemUpdateNotify(item_json, robot)
 	 
 	connection.connect();
 	 
-	var sql = 'SELECT * FROM schedule where JSON_CONTAINS(keyword, "'+item_json.keyword+'")';
+	var sql = 'SELECT * FROM keyword where keyword="'+item_json.keyword+'"';
 	//查尋指令
 	connection.query(sql,function (err, result) {
 		if(err)
@@ -86,7 +86,7 @@ function itemInsertNotify(item_json, robot)
 	 
 	connection.connect();
 	 
-	var sql = 'SELECT * FROM schedule where JSON_CONTAINS(keyword, "'+item_json.keyword+'")';
+	var sql = 'SELECT * FROM schedule where keyword="'+item_json.keyword+'"';
 	//查尋指令
 	connection.query(sql,function (err, result) {
 		if(err)
