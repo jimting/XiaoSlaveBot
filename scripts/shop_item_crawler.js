@@ -194,23 +194,22 @@ async function analyseSearchResult(data_json, keywords)
 {
 	for (i in data_json) 
 	{
-		var itemExistStatus = await ifItemExist(data_json[i].link);
-		await new Promise(r => setTimeout(r, 1000));
-		if(itemExistStatus==true)
-		{
-			console.log("=====正在將第"+i+"筆資料寫入資料庫=====");
-			console.log("資料就是他："+data_json[i]);
-			await newItem(data_json[i], keywords);
-			await itemInsertNotify(data_json[i]);
-		}
-		else
-		{
-			console.log("=====正在將第"+i+"筆資料更新進資料庫=====");
-			console.log("資料就是他："+data_json[i]);
-			await updateItem(data_json[i], keywords);
-			await itemUpdateNotify(data_json[i]);
-		}
-		await new Promise(r => setTimeout(r, 50));
+		var itemExistStatus = await ifItemExist(data_json[i].link).then(() => {
+			await new Promise(r => setTimeout(r, 100));
+			if(itemExistStatus==false)
+			{
+				console.log("=====正在將第"+i+"筆資料寫入資料庫=====");
+				await newItem(data_json[i], keywords);
+				await itemInsertNotify(data_json[i]);
+			}
+			else
+			{
+				console.log("=====正在將第"+i+"筆資料更新進資料庫=====");
+				await updateItem(data_json[i], keywords);
+				await itemUpdateNotify(data_json[i]);
+			}
+			await new Promise(r => setTimeout(r, 50));
+		});
 	} 
 }
 //檢查Item是否在資料庫裡了，以link來判斷。
@@ -249,6 +248,7 @@ function ifItemExist(link)
 //新增Item物件
 function newItem(item_json, keywords)
 {
+	console.log("寫入資料庫："+JSON.stringify(item_json));
 	var connection = mysql.createConnection({     
 		host     : db_server,       
 		user     : db_user,              
@@ -282,8 +282,7 @@ function newItem(item_json, keywords)
 //更新Item物件
 function updateItem(item_json, keywords)
 {
-	console.log("將此Json寫入資料庫："+item_json);
-	
+	console.log("更新資料庫："+JSON.stringify(item_json));
 	var connection = mysql.createConnection({     
 		host     : db_server,       
 		user     : db_user,              
