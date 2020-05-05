@@ -195,23 +195,18 @@ async function analyseSearchResult(data_json, keywords)
 	for (i in data_json) 
 	{
 		console.log("=====第"+i+"筆資料=====");
-		await checkItemExist(data_json[i], ifItemExist(data_json[i].link), keywords);
+		if(await ifItemExist(data_json[i].link))
+		{
+			await newItem(data_json[i], keywords);
+			await itemInsertNotify(data_json[i]);
+		}
+		else
+		{
+			await updateItem(data_json[i], keywords);
+			await itemUpdateNotify(data_json[i]);
+		}
+		await new Promise(r => setTimeout(r, 50));
 	} 
-}
-
-async function checkItemExist(item_json, itemExistStatus, keywords)
-{
-	if(itemExistStatus==false)
-	{
-		await newItem(item_json, keywords);
-		await itemInsertNotify(item_json);
-	}
-	else
-	{
-		await updateItem(item_json, keywords);
-		await itemUpdateNotify(item_json);
-	}
-	await new Promise(r => setTimeout(r, 50));
 }
 
 //檢查Item是否在資料庫裡了，以link來判斷。
