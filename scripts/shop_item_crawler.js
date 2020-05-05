@@ -194,9 +194,9 @@ async function analyseSearchResult(data_json, keywords)
 {
 	for (i in data_json) 
 	{
-		var itemExistStatus = await ifItemExist(data_json[i].link);
-		await new Promise(function(resolve){setTimeout(resolve,1);});
-		if(itemExistStatus==false)
+		//var itemExistStatus = await ifItemExist(data_json[i].link);
+		//await new Promise(function(resolve){setTimeout(resolve,1);});
+		if(await ifItemExist(data_json[i].link)==false)
 		{
 			console.log("=====正在將第"+i+"筆資料寫入資料庫=====");
 			await newItem(data_json[i], keywords);
