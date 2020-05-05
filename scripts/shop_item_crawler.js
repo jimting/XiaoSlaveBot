@@ -194,27 +194,28 @@ async function analyseSearchResult(data_json, keywords)
 {
 	for (i in data_json) 
 	{
-		const itemExistStatus = async () => {
+		console.log("=====第"+i+"筆資料=====");
+		const itemExistStatus = async ({
 		  const result = await ifItemExist(data_json[i].link)
 
 		  return result
-		};
-		
-		await new Promise(r => setTimeout(r, 1000));
-		if(itemExistStatus==false)
-		{
-			console.log("=====正在將第"+i+"筆資料寫入資料庫=====");
-			await newItem(data_json[i], keywords);
-			await itemInsertNotify(data_json[i]);
-		}
-		else
-		{
-			console.log("=====正在將第"+i+"筆資料更新進資料庫=====");
-			await updateItem(data_json[i], keywords);
-			await itemUpdateNotify(data_json[i]);
-		}
-		await new Promise(r => setTimeout(r, 50));
+		}).then(await checkItemExist(item_json, itemExistStatus, keywords););
 	} 
+}
+
+async function checkItemExist(item_json, itemExistStatus, keywords)
+{
+	if(itemExistStatus==false)
+	{
+		await newItem(item_json, keywords);
+		await itemInsertNotify(item_json);
+	}
+	else
+	{
+		await updateItem(item_json, keywords);
+		await itemUpdateNotify(item_json);
+	}
+	await new Promise(r => setTimeout(r, 50));
 }
 
 //檢查Item是否在資料庫裡了，以link來判斷。
@@ -242,6 +243,8 @@ async function ifItemExist(link)
 		console.log('--------------------------SELECT----------------------------');
 		console.log(result);
 		console.log('------------------------------------------------------------\n\n');  
+		
+		console.log("### 拿到查詢狀態，開始寫入或更新 ###");
 		var json_data = JSON.parse(JSON.stringify(result));
 		if(json_data.length > 0)
 			return true;
