@@ -194,14 +194,26 @@ async function analyseSearchResult(data_json, keywords)
 {
 	for (i in data_json) 
 	{
-		console.log("=====第"+i+"筆資料=====");
-		if(await ifItemExist(data_json[i].link))
+		const itemExistStatus = async () => {
+		  const result = await ifItemExist(data_json[i].link)
+
+		  return result
+		};
+		
+		while(itemExistStatus!=true&&itemExistStatus!=false)
 		{
+			// wait;
+		}
+		
+		if(itemExistStatus==false)
+		{
+			console.log("=====正在將第"+i+"筆資料寫入資料庫=====");
 			await newItem(data_json[i], keywords);
 			await itemInsertNotify(data_json[i]);
 		}
 		else
 		{
+			console.log("=====正在將第"+i+"筆資料更新進資料庫=====");
 			await updateItem(data_json[i], keywords);
 			await itemUpdateNotify(data_json[i]);
 		}
@@ -234,8 +246,6 @@ async function ifItemExist(link)
 		console.log('--------------------------SELECT----------------------------');
 		console.log(result);
 		console.log('------------------------------------------------------------\n\n');  
-		
-		console.log("### 拿到查詢狀態，開始寫入或更新 ###")
 		var json_data = JSON.parse(JSON.stringify(result));
 		if(json_data.length > 0)
 			return true;
