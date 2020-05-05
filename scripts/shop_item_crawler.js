@@ -250,7 +250,7 @@ async function ifItemExist(link)
 }
 
 //新增Item物件
-function newItem(item_json, keywords)
+async function newItem(item_json, keywords)
 {
 	console.log("寫入資料庫："+JSON.stringify(item_json));
 	var connection = mysql.createConnection({     
@@ -266,7 +266,7 @@ function newItem(item_json, keywords)
 	var  addSql = 'INSERT INTO item(name, link, img, sales_volume, price, monthly_revenue, review, ad) VALUES(?, ?, ?, ?, ?, ?, ?, ?)';
 	var  addSqlParams = [item_json.name, item_json.link, item_json.img, item_json.sales_volume, item_json.price, item_json.monthly_revenue, item_json.review, item_json.ad];
 	// 新增Schedule內容
-	connection.query(addSql,addSqlParams,function (err, result) {
+	await connection.query(addSql,addSqlParams,function (err, result) {
 		if(err)
 		{
 			console.log('[INSERT ERROR] - ',err.message);
@@ -284,7 +284,7 @@ function newItem(item_json, keywords)
 }
 
 //更新Item物件
-function updateItem(item_json, keywords)
+async function updateItem(item_json, keywords)
 {
 	console.log("更新資料庫："+JSON.stringify(item_json));
 	var connection = mysql.createConnection({     
@@ -300,7 +300,7 @@ function updateItem(item_json, keywords)
 	var modSql = 'UPDATE item SET name=?, img=?, sales_volume=?, price=?, monthly_revenue=?, review=?, ad=? where link=?';
 	var modSqlParams = [item_json.name, item_json.img, item_json.sales_volume, item_json.price, item_json.monthly_revenue, item_json.review, item_json.ad, item_json.link];
 	//查尋指令
-	connection.query(modSql, modSqlParams,function (err, result) {
+	await connection.query(modSql, modSqlParams,function (err, result) {
 		if(err)
 		{
 			//console.log('[UPDATE ERROR] - ',err.message);
@@ -316,7 +316,7 @@ function updateItem(item_json, keywords)
 }
 
 //新增物件Keyword
-function newKeywords(item_json, keywords)
+async function newKeywords(item_json, keywords)
 {
 	var connection = mysql.createConnection({     
 		host     : db_server,       
@@ -331,7 +331,7 @@ function newKeywords(item_json, keywords)
 	var  addSql = 'INSERT INTO keyword(link, keyword) VALUES(?, ?)';
 	var  addSqlParams = [item_json.link, keywords];
 	// 新增Schedule內容
-	connection.query(addSql,addSqlParams,function (err, result) {
+	await connection.query(addSql,addSqlParams,function (err, result) {
 		if(err)
 		{
 			console.log('[INSERT ERROR] - ',err.message);
@@ -348,10 +348,10 @@ function newKeywords(item_json, keywords)
 }
 
 //推通知訊息到MessageQueue
-function itemUpdateNotify(item_json)
+async function itemUpdateNotify(item_json)
 {
 	var pub = rabbitmq.socket('PUBLISH');
-	pub.connect('itemUpdate', function() 
+	await pub.connect('itemUpdate', function() 
 	{
 		item_json.keyword = 
 		pub.write(JSON.stringify(item_json), "utf-8");
@@ -359,10 +359,10 @@ function itemUpdateNotify(item_json)
 }
 
 //推通知訊息到MessageQueue
-function itemInsertNotify(item_json)
+async function itemInsertNotify(item_json)
 {
 	var pub = rabbitmq.socket('PUBLISH');
-	pub.connect('itemInsert', function() 
+	await pub.connect('itemInsert', function() 
 	{
 		pub.write(JSON.stringify(item_json), "utf-8");
 	});
