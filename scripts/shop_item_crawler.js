@@ -9,7 +9,6 @@ var crawler_url = process.env.crawler_url;
 //for rabbitmq
 var MQserver = process.env.rabbitmq;
 var rabbitmq = require('rabbit.js').createContext(MQserver);
-const { Worker } = require('worker_threads');
 
 module.exports = function(robot) 
 {
