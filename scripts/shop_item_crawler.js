@@ -216,6 +216,7 @@ async function analyseSearchResult(data_json, keywords)
 		await new Promise(r => setTimeout(r, 50));
 	} 
 }
+
 //檢查Item是否在資料庫裡了，以link來判斷。
 async function ifItemExist(link)
 {
