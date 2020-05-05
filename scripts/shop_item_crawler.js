@@ -226,7 +226,7 @@ function ifItemExist(link)
 	 
 	connection.connect();
 	 
-	var sql = 'SELECT * FROM item where link='+link;
+	var sql = 'SELECT * FROM item where link="'+link+'"';
 	//查尋指令
 	connection.query(sql,function (err, result) {
 		if(err)
