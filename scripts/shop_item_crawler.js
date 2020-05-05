@@ -199,12 +199,12 @@ async function analyseSearchResult(data_json, keywords)
 		if(itemExistStatus)
 		{
 			await newItem(data_json[i], keywords);
-			itemInsertNotify(item_json);
+			itemInsertNotify(data_json[i]);
 		}
 		else
 		{
 			await updateItem(data_json[i], keywords);
-			itemUpdateNotify(item_json);
+			itemUpdateNotify(data_json[i]);
 		}
 		await new Promise(r => setTimeout(r, 50));
 	} 
