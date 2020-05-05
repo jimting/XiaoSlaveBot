@@ -194,9 +194,9 @@ async function analyseSearchResult(data_json, keywords)
 {
 	for (i in data_json) 
 	{
-		//var itemExistStatus = await ifItemExist(data_json[i].link);
-		//await new Promise(function(resolve){setTimeout(resolve,1);});
-		if(await ifItemExist(data_json[i].link)==false)
+		var itemExistStatus = await ifItemExist(data_json[i].link);
+		await new Promise(r => setTimeout(r, 1000));
+		if(itemExistStatus==false)
 		{
 			console.log("=====正在將第"+i+"筆資料寫入資料庫=====");
 			await newItem(data_json[i], keywords);
@@ -208,11 +208,11 @@ async function analyseSearchResult(data_json, keywords)
 			await updateItem(data_json[i], keywords);
 			await itemUpdateNotify(data_json[i]);
 		}
-		await new Promise(function(resolve){setTimeout(resolve,1);});
+		await new Promise(r => setTimeout(r, 50));
 	} 
 }
 //檢查Item是否在資料庫裡了，以link來判斷。
-function ifItemExist(link)
+async function ifItemExist(link)
 {
 	var connection = mysql.createConnection({     
 		host     : db_server,       
@@ -226,7 +226,7 @@ function ifItemExist(link)
 	 
 	var sql = 'SELECT * FROM item where link="'+link+'"';
 	//查尋指令
-	connection.query(sql,function (err, result) {
+	await connection.query(sql,function (err, result) {
 		if(err)
 		{
 			console.log('[SELECT ERROR] - ',err.message);
