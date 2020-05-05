@@ -198,15 +198,13 @@ async function analyseSearchResult(data_json, keywords)
 		await new Promise(r => setTimeout(r, 50));
 		if(itemExistStatus)
 		{
-			await newItem(data_json[i], true, keywords);
-			if(ifNotify)
-				itemInsertNotify(item_json);
+			await newItem(data_json[i], keywords);
+			itemInsertNotify(item_json);
 		}
 		else
 		{
-			await updateItem(data_json[i], true, keywords);
-			if(ifNotify)
-				itemUpdateNotify(item_json);
+			await updateItem(data_json[i], keywords);
+			itemUpdateNotify(item_json);
 		}
 		await new Promise(r => setTimeout(r, 50));
 	} 
