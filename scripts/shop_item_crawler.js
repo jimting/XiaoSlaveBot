@@ -195,7 +195,7 @@ async function analyseSearchResult(data_json, keywords)
 	for (i in data_json) 
 	{
 		console.log("=====第"+i+"筆資料=====");
-		await checkItemExist(data_json[i], ifItemExist(data_json[i].link), keywords));
+		await checkItemExist(data_json[i], ifItemExist(data_json[i].link), keywords);
 	} 
 }
 
