@@ -197,9 +197,17 @@ async function analyseSearchResult(data_json, keywords)
 		var itemExistStatus = await ifItemExist(data_json[i].link)
 		await new Promise(r => setTimeout(r, 50));
 		if(itemExistStatus)
+		{
 			await newItem(data_json[i], true, keywords);
+			if(ifNotify)
+				itemInsertNotify(item_json);
+		}
 		else
-			await newItem(data_json[i], true, keywords);
+		{
+			await updateItem(data_json[i], true, keywords);
+			if(ifNotify)
+				itemUpdateNotify(item_json);
+		}
 		await new Promise(r => setTimeout(r, 50));
 	} 
 }
@@ -237,7 +245,7 @@ function ifItemExist(link)
 }
 
 //新增Item物件
-function newItem(item_json, ifNotify, keywords)
+function newItem(item_json, keywords)
 {
 	var connection = mysql.createConnection({     
 		host     : db_server,       
@@ -263,15 +271,14 @@ function newItem(item_json, ifNotify, keywords)
 		//console.log('INSERT ID:',result.insertId);        
 		console.log('INSERT ID:',result);        
 		console.log('-----------------------------------------------------------------\n\n');  
-		if(ifNotify)
-			itemInsertNotify(item_json);
 	});
 	 
 	connection.end();
+	newKeywords(item_json, keywords);
 }
 
 //更新Item物件
-function updateItem(item_json, ifNotify, keywords)
+function updateItem(item_json, keywords)
 {
 	console.log("將此Json寫入資料庫："+item_json);
 	
@@ -298,40 +305,38 @@ function updateItem(item_json, ifNotify, keywords)
 		console.log('--------------------------UPDATE----------------------------');
 		console.log('UPDATE affectedRows',result.affectedRows);
 		console.log('-----------------------------------------------------------------\n\n'); 
-		itemUpdateKeywords(item_json, ifNotify, keywords);
 	});
 	 
 	connection.end();
 }
 
-//更新物件中的keywords, 方便追蹤。
-function itemUpdateKeywords(item_json, ifNotify, keywords)
+//新增物件Keyword
+function newKeywords(item_json, keywords)
 {
 	var connection = mysql.createConnection({     
 		host     : db_server,       
 		user     : db_user,              
 		password : db_passwd,       
 		port: '3306',                   
-		database: db_name 
+		database: db_name
 	}); 
 	 
 	connection.connect();
-	
-	var modSql = 'UPDATE item SET keywords=JSON_ARRAY_APPEND(new, "$", ?) WHERE link=? AND NOT JSON_CONTAINS(keywords, ?)';
-	var modSqlParams = [keywords, item_json.link, keywords];
-	//查尋指令
-	connection.query(modSql,function (err, result) {
+
+	var  addSql = 'INSERT INTO keyword(link, keyword) VALUES(?, ?)';
+	var  addSqlParams = [item_json.link, keywords];
+	// 新增Schedule內容
+	connection.query(addSql,addSqlParams,function (err, result) {
 		if(err)
 		{
-			//console.log('[UPDATE ERROR] - ',err.message);
+			console.log('[INSERT ERROR] - ',err.message);
 			return;
-		}
-		 
-		console.log('--------------------------UPDATE----------------------------');
-		console.log('UPDATE affectedRows',result.affectedRows);
-		console.log('-----------------------------------------------------------------\n\n'); 
-		if(ifNotify)
-			itemUpdateNotify(item_json);
+		}        
+		
+		console.log('--------------------------INSERT----------------------------');
+		//console.log('INSERT ID:',result.insertId);        
+		console.log('INSERT Keywords Successfully:',result);        
+		console.log('-----------------------------------------------------------------\n\n');  
 	});
 	 
 	connection.end();
