@@ -195,11 +195,8 @@ async function analyseSearchResult(data_json, keywords)
 	for (i in data_json) 
 	{
 		console.log("=====第"+i+"筆資料=====");
-		const itemExistStatus = async ({
-		  const result = await ifItemExist(data_json[i].link)
-
-		  return result
-		}).then(await checkItemExist(item_json, itemExistStatus, keywords););
+		const itemExistStatus = await ifItemExist(data_json[i].link)
+		.then(await checkItemExist(item_json, itemExistStatus, keywords););
 	} 
 }
 
@@ -244,7 +241,7 @@ async function ifItemExist(link)
 		console.log(result);
 		console.log('------------------------------------------------------------\n\n');  
 		
-		console.log("### 拿到查詢狀態，開始寫入或更新 ###");
+		console.log("### 拿到查詢狀態，開始寫入或更新 ###")
 		var json_data = JSON.parse(JSON.stringify(result));
 		if(json_data.length > 0)
 			return true;
