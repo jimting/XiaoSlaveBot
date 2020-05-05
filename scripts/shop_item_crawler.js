@@ -199,12 +199,14 @@ async function analyseSearchResult(data_json, keywords)
 		if(itemExistStatus)
 		{
 			console.log("=====正在將第"+i+"筆資料寫入資料庫=====");
+			console.log("資料就是他："+data_json[i]);
 			await newItem(data_json[i], keywords);
 			await itemInsertNotify(data_json[i]);
 		}
 		else
 		{
 			console.log("=====正在將第"+i+"筆資料更新進資料庫=====");
+			console.log("資料就是他："+data_json[i]);
 			await updateItem(data_json[i], keywords);
 			await itemUpdateNotify(data_json[i]);
 		}
