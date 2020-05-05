@@ -194,7 +194,12 @@ async function analyseSearchResult(data_json, keywords)
 {
 	for (i in data_json) 
 	{
-		var itemExistStatus = await ifItemExist(data_json[i].link);
+		const itemExistStatus = async () => {
+		  const result = await ifItemExist(data_json[i].link)
+
+		  return result
+		};
+		
 		await new Promise(r => setTimeout(r, 1000));
 		if(itemExistStatus==false)
 		{
@@ -292,10 +297,10 @@ function updateItem(item_json, keywords)
 	 
 	connection.connect();
 	 
-	var modSql = 'UPDATE item SET name=?, img=?, sales_volume=?, price=?, monthly_revenue=?, review=?, ad=?';
-	var modSqlParams = [item_json.name, item_json.img, item_json.sales_volume, item_json.price, item_json.monthly_revenue, item_json.review, item_json.ad];
+	var modSql = 'UPDATE item SET name=?, img=?, sales_volume=?, price=?, monthly_revenue=?, review=?, ad=? where link=?';
+	var modSqlParams = [item_json.name, item_json.img, item_json.sales_volume, item_json.price, item_json.monthly_revenue, item_json.review, item_json.ad, item_json.link];
 	//查尋指令
-	connection.query(modSql,function (err, result) {
+	connection.query(modSql, modSqlParams,function (err, result) {
 		if(err)
 		{
 			//console.log('[UPDATE ERROR] - ',err.message);
