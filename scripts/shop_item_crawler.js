@@ -194,9 +194,9 @@ async function analyseSearchResult(data_json, keywords)
 {
 	for (i in data_json) 
 	{
-		var itemExistStatus = await ifItemExist(data_json[i].link)
-		await new Promise(r => setTimeout(r, 100));
-		if(itemExistStatus)
+		var itemExistStatus = await ifItemExist(data_json[i].link);
+		await new Promise(r => setTimeout(r, 1000));
+		if(itemExistStatus==true)
 		{
 			console.log("=====正在將第"+i+"筆資料寫入資料庫=====");
 			console.log("資料就是他："+data_json[i]);
@@ -239,7 +239,6 @@ function ifItemExist(link)
 		console.log(result);
 		console.log('------------------------------------------------------------\n\n');  
 		var json_data = JSON.parse(JSON.stringify(result));
-		console.log("###### 成功執行ifItemExist ######");
 		if(json_data.length > 0)
 			return true;
 		return false;
