@@ -345,6 +345,7 @@ async function newKeywords(item_json, keywords)
 //推通知訊息到MessageQueue
 async function itemUpdateNotify(item_json)
 {
+	console.log("### 觸發item更新通知 ###");
 	var pub = rabbitmq.socket('PUBLISH');
 	await pub.connect('itemUpdate', function() 
 	{
@@ -356,6 +357,7 @@ async function itemUpdateNotify(item_json)
 //推通知訊息到MessageQueue
 async function itemInsertNotify(item_json)
 {
+	console.log("### 觸發itemt插入通知 ###");
 	var pub = rabbitmq.socket('PUBLISH');
 	await pub.connect('itemInsert', function() 
 	{
