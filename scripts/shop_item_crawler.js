@@ -193,17 +193,7 @@ async function analyseSearchResult(data_json, keywords)
 {
 	for (i in data_json) 
 	{
-		const itemExistStatus = async () => {
-		  const result = await ifItemExist(data_json[i].link)
-
-		  return result
-		};
-		
-		while(itemExistStatus!=true&&itemExistStatus!=false)
-		{
-			// wait;
-			console.log("等待變數init.");
-		}
+		const itemExistStatus = ifItemExist(data_json[i].link);
 		
 		if(itemExistStatus==false)
 		{
@@ -222,7 +212,7 @@ async function analyseSearchResult(data_json, keywords)
 }
 
 //檢查Item是否在資料庫裡了，以link來判斷。
-async function ifItemExist(link)
+function ifItemExist(link)
 {
 	var connection = mysql.createConnection({     
 		host     : db_server,       
@@ -236,7 +226,7 @@ async function ifItemExist(link)
 	 
 	var sql = 'SELECT * FROM item where link="'+link+'"';
 	//查尋指令
-	await connection.query(sql,function (err, result) {
+	connection.query(sql,function (err, result) {
 		if(err)
 		{
 			console.log('[SELECT ERROR] - ',err.message);
