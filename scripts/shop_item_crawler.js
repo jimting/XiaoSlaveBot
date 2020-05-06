@@ -193,7 +193,7 @@ async function analyseSearchResult(data_json, keywords)
 {
 	for (i in data_json) 
 	{
-		const itemExistStatus = ifItemExist(data_json[i].link);
+		let itemExistStatus = await ifItemExist(data_json[i].link);
 		
 		if(itemExistStatus==false)
 		{
