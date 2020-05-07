@@ -243,7 +243,6 @@ async function ifItemExist(json_item, keywords)
 		var json_data = JSON.parse(JSON.stringify(result));
 		if(json_data.length > 0)
 			itemExistStatus = true;
-		itemExistStatus = false;
 		console.log("檢查完成。是否在資料庫內？：" + itemExistStatus);
 		console.log('--------------------------End Check-------------------------------\n\n');
 		checkFunction(json_item, keywords, itemExistStatus);
