@@ -194,8 +194,7 @@ async function analyseSearchResult(data_json, keywords)
 	for (i in data_json) 
 	{
 		console.log("=====第"+i+"筆資料=====");
-		let itemExistStatus = await ifItemExist(data_json[i].link);
-		await checkFunction(data_json[i], keywords, itemExistStatus);
+		await ifItemExist(data_json[i], keywords);
 	} 
 }
 
@@ -217,7 +216,7 @@ async function checkFunction(json_item, keywords, itemExistStatus)
 }
 
 //檢查Item是否在資料庫裡了，以link來判斷。
-function ifItemExist(link)
+function ifItemExist(json_item, keywords)
 {
 	var connection = mysql.createConnection({     
 		host     : db_server,       
@@ -229,22 +228,25 @@ function ifItemExist(link)
 	 
 	connection.connect();
 	 
-	var sql = 'SELECT * FROM item where link="'+link+'"';
+	var sql = 'SELECT * FROM item where link="'+json_item.link+'"';
 	//查尋指令
 	connection.query(sql,function (err, result) {
+		var itemExistStatus = false;
 		if(err)
 		{
 			console.log('[SELECT ERROR] - ',err.message);
-			return false;
+			itemExistStatus = false;
 		}
 		 
 		console.log('--------------------------SELECT----------------------------');
-		console.log(result);
-		console.log('------------------------------------------------------------\n\n');  
+		console.log(result);  
 		var json_data = JSON.parse(JSON.stringify(result));
 		if(json_data.length > 0)
-			return true;
-		return false;
+			itemExistStatus = true;
+		itemExistStatus = false;
+		console.log("檢查完成。是否在資料庫內？：" + itemExistStatus);
+		console.log('--------------------------End Check-------------------------------\n\n');
+		await checkFunction(json_item, keywords, itemExistStatus);
 	});
 	connection.end();
 }
