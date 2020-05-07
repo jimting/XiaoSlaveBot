@@ -216,7 +216,7 @@ async function checkFunction(json_item, keywords, itemExistStatus)
 }
 
 //檢查Item是否在資料庫裡了，以link來判斷。
-function ifItemExist(json_item, keywords)
+async function ifItemExist(json_item, keywords)
 {
 	var connection = mysql.createConnection({     
 		host     : db_server,       
