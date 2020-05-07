@@ -230,7 +230,7 @@ async function ifItemExist(json_item, keywords)
 	 
 	var sql = 'SELECT * FROM item where link="'+json_item.link+'"';
 	//查尋指令
-	connection.query(sql,function (err, result) {
+	await connection.query(sql,function (err, result) {
 		var itemExistStatus = false;
 		if(err)
 		{
