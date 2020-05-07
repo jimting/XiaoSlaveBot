@@ -212,6 +212,7 @@ async function checkFunction(json_item, keywords, itemExistStatus)
 		await updateItem(json_item, keywords);
 		await itemUpdateNotify(json_item);
 	}
+	await ifKeywordExist(item_json, keywords);
 	await new Promise(r => setTimeout(r, 50));
 }
 
@@ -238,7 +239,7 @@ async function ifItemExist(json_item, keywords)
 			itemExistStatus = false;
 		}
 		 
-		console.log('--------------------------SELECT----------------------------');
+		console.log('-----檢查Item是否在資料庫裡了，以link來判斷。-----');
 		console.log(result);  
 		var json_data = JSON.parse(JSON.stringify(result));
 		if(json_data.length > 0)
@@ -274,10 +275,10 @@ async function newItem(item_json, keywords)
 			return;
 		}        
 		
-		console.log('--------------------------INSERT----------------------------');
+		console.log('--------------------------新增Item物件----------------------------');
 		//console.log('INSERT ID:',result.insertId);        
 		console.log('INSERT ID:',result);        
-		console.log('-----------------------------------------------------------------\n\n');  
+		console.log('--------------------------End Insert------------------------------\n\n');  
 	});
 	 
 	connection.end();
@@ -308,11 +309,45 @@ async function updateItem(item_json, keywords)
 			return;
 		}
 		 
-		console.log('--------------------------UPDATE----------------------------');
+		console.log('--------------------------更新Item物件----------------------------');
 		console.log('UPDATE affectedRows',result.affectedRows);
-		console.log('-----------------------------------------------------------------\n\n'); 
+		console.log('-------------------------End Update------------------------------\n\n'); 
 	});
 	 
+	connection.end();
+}
+
+//檢查此Item是否包含此Keyword，若沒有就加進去。
+async function ifKeywordExist(json_item, keywords)
+{
+	var connection = mysql.createConnection({     
+		host     : db_server,       
+		user     : db_user,              
+		password : db_passwd,       
+		port: '3306',                   
+		database: db_name 
+	}); 
+	 
+	connection.connect();
+	 
+	var sql = 'SELECT * FROM keyword where link="'+json_item.link+'" and keyword="'+keywords+'"';
+	//查尋指令
+	connection.query(sql,function (err, result) {
+		var itemExistStatus = false;
+		if(err)
+		{
+			console.log('[SELECT ERROR] - ',err.message);
+			itemExistStatus = false;
+		}
+		 
+		console.log('---檢查此Item是否包含此Keyword，若沒有就加進去。---');
+		console.log(result);  
+		var json_data = JSON.parse(JSON.stringify(result));
+		if(json_data.length > 0)
+			newKeywords(json_item, keywords);
+		console.log("檢查完成。是否在資料庫內？：" + itemExistStatus);
+		console.log('--------------------------End Check-------------------------------\n\n');
+	});
 	connection.end();
 }
 
@@ -339,10 +374,10 @@ async function newKeywords(item_json, keywords)
 			return;
 		}        
 		
-		console.log('--------------------------INSERT----------------------------');
+		console.log('--------------------------新增物件Keyword----------------------------');
 		//console.log('INSERT ID:',result.insertId);        
 		console.log('INSERT Keywords Successfully:',result);        
-		console.log('-----------------------------------------------------------------\n\n');  
+		console.log('---------------------------End Insert-------------------------\n\n');  
 	});
 	 
 	connection.end();
