@@ -230,7 +230,7 @@ async function ifItemExist(json_item, keywords)
 	 
 	var sql = 'SELECT * FROM item where link="'+json_item.link+'"';
 	//查尋指令
-	await connection.query(sql,function (err, result) {
+	connection.query(sql,function (err, result) {
 		var itemExistStatus = false;
 		if(err)
 		{
@@ -246,7 +246,7 @@ async function ifItemExist(json_item, keywords)
 		itemExistStatus = false;
 		console.log("檢查完成。是否在資料庫內？：" + itemExistStatus);
 		console.log('--------------------------End Check-------------------------------\n\n');
-		await checkFunction(json_item, keywords, itemExistStatus);
+		checkFunction(json_item, keywords, itemExistStatus);
 	});
 	connection.end();
 }
