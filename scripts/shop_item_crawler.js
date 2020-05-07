@@ -193,31 +193,31 @@ async function analyseSearchResult(data_json, keywords)
 {
 	for (i in data_json) 
 	{
-		console.log("=====第"+i+"筆資料=====");
+		//每一筆確認都是獨立的
 		await ifItemExist(data_json[i], keywords);
 	} 
 }
 
-async function checkFunction(json_item, keywords, itemExistStatus)
+async function checkFunction(item_json, keywords, itemExistStatus)
 {
 	if(itemExistStatus==false)
 	{
 		console.log("=====開始插入=====");
-		await newItem(json_item, keywords);
-		await itemInsertNotify(json_item);
+		await newItem(item_json, keywords);
+		await itemInsertNotify(item_json);
 	}
 	else
 	{
 		console.log("=====開始更新=====");
-		await updateItem(json_item, keywords);
-		await itemUpdateNotify(json_item);
+		await updateItem(item_json, keywords);
+		await itemUpdateNotify(item_json);
 	}
 	await ifKeywordExist(item_json, keywords);
 	await new Promise(r => setTimeout(r, 50));
 }
 
 //檢查Item是否在資料庫裡了，以link來判斷。
-async function ifItemExist(json_item, keywords)
+async function ifItemExist(item_json, keywords)
 {
 	var connection = mysql.createConnection({     
 		host     : db_server,       
@@ -229,7 +229,7 @@ async function ifItemExist(json_item, keywords)
 	 
 	connection.connect();
 	 
-	var sql = 'SELECT * FROM item where link="'+json_item.link+'"';
+	var sql = 'SELECT * FROM item where link="'+item_json.link+'"';
 	//查尋指令
 	connection.query(sql,function (err, result) {
 		var itemExistStatus = false;
@@ -246,7 +246,7 @@ async function ifItemExist(json_item, keywords)
 			itemExistStatus = true;
 		console.log("檢查完成。是否在資料庫內？：" + itemExistStatus);
 		console.log('--------------------------End Check-------------------------------\n\n');
-		checkFunction(json_item, keywords, itemExistStatus);
+		checkFunction(item_json, keywords, itemExistStatus);
 	});
 	connection.end();
 }
@@ -318,7 +318,7 @@ async function updateItem(item_json, keywords)
 }
 
 //檢查此Item是否包含此Keyword，若沒有就加進去。
-async function ifKeywordExist(json_item, keywords)
+async function ifKeywordExist(item_json, keywords)
 {
 	var connection = mysql.createConnection({     
 		host     : db_server,       
@@ -330,7 +330,7 @@ async function ifKeywordExist(json_item, keywords)
 	 
 	connection.connect();
 	 
-	var sql = 'SELECT * FROM keyword where link="'+json_item.link+'" and keyword="'+keywords+'"';
+	var sql = 'SELECT * FROM keyword where link="'+item_json.link+'" and keyword="'+keywords+'"';
 	//查尋指令
 	connection.query(sql,function (err, result) {
 		var itemExistStatus = false;
@@ -344,7 +344,7 @@ async function ifKeywordExist(json_item, keywords)
 		console.log(result);  
 		var json_data = JSON.parse(JSON.stringify(result));
 		if(json_data.length > 0)
-			newKeywords(json_item, keywords);
+			newKeywords(item_json, keywords);
 		console.log("檢查完成。是否在資料庫內？：" + itemExistStatus);
 		console.log('--------------------------End Check-------------------------------\n\n');
 	});
