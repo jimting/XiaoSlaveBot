@@ -193,8 +193,9 @@ async function analyseSearchResult(data_json, keywords)
 {
 	for (i in data_json) 
 	{
-		//每一筆確認都是獨立的
-		await ifItemExist(data_json[i], keywords);
+		//每一筆確認都是獨立的，先把空白url過濾掉(不知為啥會有"https://shopee.tw/"這個link...)
+		if(data_json[i].link != "https://shopee.tw/")
+			await ifItemExist(data_json[i], keywords);
 	} 
 }
 
