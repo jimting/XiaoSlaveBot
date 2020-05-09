@@ -138,7 +138,7 @@ function findChannelAndSendNotify(keyword, notify_content)
 			return;
 		}
 		 
-		console.log('---找出訂閱這個keyword的channel 給他們通知！---');
+		console.log('---找出訂閱「'+keyword+'」的channel 給他們通知！---');
 		console.log(result);
 		var json_data = JSON.parse(JSON.stringify(result));
 		console.log(json_data);
