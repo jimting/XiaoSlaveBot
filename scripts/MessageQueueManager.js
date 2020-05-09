@@ -68,7 +68,7 @@ function itemUpdateNotify(item_json, robot)
 			bot_speaking += "商品價錢：" + item_json.price + "\n";
 			bot_speaking += "連結：" + item_json.link + "\n";
 			
-			findChannelAndSendNotify(keyword, bot_speaking);
+			findChannelAndSendNotify(json_data[i].keywords, bot_speaking);
 		}
 		console.log('------------------------------------------------------------\n\n');  
 	});
@@ -109,7 +109,7 @@ function itemInsertNotify(item_json, robot)
 			bot_speaking += "商品價錢：" + item_json.price + "\n";
 			bot_speaking += "連結：" + item_json.link + "\n";
 			
-			findChannelAndSendNotify(keyword, bot_speaking);
+			findChannelAndSendNotify(json_data[i].keywords, bot_speaking);
 		}
 	});
 	 
