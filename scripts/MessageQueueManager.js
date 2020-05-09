@@ -34,7 +34,7 @@ module.exports = function(robot)
 	
 }
 
-//把利用商品的Link找到此商品的所有Keyword，並將更新資訊推給schedule內有訂閱這些keyword的頻道
+//利用商品的Link找到此商品的所有Keyword，並將更新資訊推給schedule內有訂閱這些keyword的頻道
 function itemUpdateNotify(item_json, robot)
 {
 	var connection = mysql.createConnection({     
@@ -56,19 +56,19 @@ function itemUpdateNotify(item_json, robot)
 			return;
 		}
 		 
-		console.log('---把利用商品的Link找到此商品的所有Keyword，並將更新資訊推給schedule內有訂閱這些keyword的頻道---');
+		console.log('---利用商品的Link找到此商品的所有Keyword，並將更新資訊推給schedule內有訂閱這些keyword的頻道---');
 		console.log(result);
 		var json_data = JSON.parse(JSON.stringify(result));
 		console.log(json_data);
 		for(var i = 0;i < json_data.length; i++)
 		{
-			bot_speaking = "你所追蹤的「" + json_data[i].keywords + "有件相關商品更新了！」\n";
+			bot_speaking = "你所追蹤的「" + json_data[i].keyword + "有件相關商品更新了！」\n";
 			bot_speaking += "商品名稱：" + item_json.name + "\n";
 			bot_speaking += "商品圖片：" + item_json.pic + "\n";
 			bot_speaking += "商品價錢：" + item_json.price + "\n";
 			bot_speaking += "連結：" + item_json.link + "\n";
 			
-			findChannelAndSendNotify(json_data[i].keywords, bot_speaking);
+			findChannelAndSendNotify(json_data[i].keyword, bot_speaking);
 		}
 		console.log('------------------------------------------------------------\n\n');  
 	});
@@ -76,7 +76,7 @@ function itemUpdateNotify(item_json, robot)
 	connection.end();
 }
 
-//把利用商品的Link找到此商品的所有Keyword，並將新物品資訊推給schedule內有訂閱這些keyword的頻道
+//利用商品的Link找到此商品的所有Keyword，並將新物品資訊推給schedule內有訂閱這些keyword的頻道
 function itemInsertNotify(item_json, robot)
 {
 	var connection = mysql.createConnection({     
@@ -97,19 +97,19 @@ function itemInsertNotify(item_json, robot)
 			console.log('[SELECT ERROR] - ',err.message);
 			return;
 		}
-		console.log('---把利用商品的Link找到此商品的所有Keyword，並將新物品資訊推給schedule內有訂閱這些keyword的頻道---');
+		console.log('---利用商品的Link找到此商品的所有Keyword，並將新物品資訊推給schedule內有訂閱這些keyword的頻道---');
 		console.log(result);
 		var json_data = JSON.parse(JSON.stringify(result));
 		console.log(json_data);
 		for(var i = 0;i < json_data.length; i++)
 		{
-			bot_speaking = "你所追蹤的「" + json_data[i].keywords + "有一件新商品出現了！」\n";
+			bot_speaking = "你所追蹤的「" + json_data[i].keyword + "有一件新商品出現了！」\n";
 			bot_speaking += "商品名稱：" + item_json.name + "\n";
 			bot_speaking += "商品圖片：" + item_json.pic + "\n";
 			bot_speaking += "商品價錢：" + item_json.price + "\n";
 			bot_speaking += "連結：" + item_json.link + "\n";
 			
-			findChannelAndSendNotify(json_data[i].keywords, bot_speaking);
+			findChannelAndSendNotify(json_data[i].keyword, bot_speaking);
 		}
 	});
 	 

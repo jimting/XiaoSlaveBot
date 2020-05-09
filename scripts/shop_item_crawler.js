@@ -13,7 +13,7 @@ var rabbitmq = require('rabbit.js').createContext(MQserver);
 module.exports = function(robot) 
 {
 	//主動下搜尋關鍵字指令，ifNotify=True
-    robot.respond(/(搜尋)(.*)/, function(response) 
+    robot.respond(/(搜尋)\s(.*)/, function(response) 
     {
 		//拿到關鍵字
 		var keywords = response.match[2]; 
