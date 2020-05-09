@@ -251,7 +251,7 @@ async function ifItemExist(item_json, keywords)
 		if(itemExistStatus=="EXIST")
 		{
 			//如果不同
-			if(json_data[0]!=item_json)
+			if(json_data[0].price!=item_json.price)
 			{
 				itemExistStatus = "UPDATE";
 			}
