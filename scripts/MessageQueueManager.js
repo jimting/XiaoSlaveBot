@@ -145,7 +145,7 @@ function findChannelAndSendNotify(robot, keyword, notify_content)
 		console.log(json_data);
 		for(var i = 0;i < json_data.length; i++)
 		{
-			robot.messageRoom(json_data[i].room, bot_speaking);
+			robot.messageRoom(json_data[i].room, notify_content);
 		}
 		console.log('------------------------------------------------------------\n\n');  
 	});
