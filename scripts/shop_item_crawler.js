@@ -455,12 +455,13 @@ function followItemsCronJob(robot)
 		
 		for(var i = 0;i < json_data.length; i++)
 		{
+			var keyword = json_data[i].keyword;
 			// schedule tasks / 每個整點都會執行此動作。
-			cron.schedule("00 00 * * * *", function(){
+			cron.schedule("00 04 * * * *", function(){
 				console.log("---------------------");
-				console.log("Running Cron Job");
-				robot.messageRoom("831516917", "整點到了！開始查詢！關鍵字："+json_data[i].keyword);
-				shopeeCrawler(json_data[i].keyword);
+				console.log("Running Cron Job, keyword : " + keyword);
+				robot.messageRoom("831516917", "整點到了！開始查詢！關鍵字："+keyword);
+				shopeeCrawler(keyword);
 			});
 		}
 		console.log('------------------------------------------------------------\n\n');  
