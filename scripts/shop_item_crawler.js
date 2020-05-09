@@ -10,6 +10,12 @@ var crawler_url = process.env.crawler_url;
 var MQserver = process.env.rabbitmq;
 var rabbitmq = require('rabbit.js').createContext(MQserver);
 
+//cron job
+var cron = require("node-cron");
+
+//request
+var request = require('request');
+
 module.exports = function(robot) 
 {
 	//主動下搜尋關鍵字指令，ifNotify=True
@@ -18,30 +24,8 @@ module.exports = function(robot)
 		//拿到關鍵字
 		var keywords = response.match[2]; 
 		
-		//設定好搜尋的url
-		var url = crawler_url + '/shopeeCrawler?keywords='+keywords;
-		var encoded_url = encodeURI(url);
-		
-		response.reply("好的！開始搜尋「"+keywords+"」！");
-		
-		//開始搜尋惹
-		var request = require('request');
-		var room = response.envelope.room;
-		request(encoded_url, function(error, res, body) 
-		{
-			if (!error && res.statusCode == 200) 
-			{
-				json_data = JSON.parse(body);
-				// 將拿到的最新結果進行分析與儲存，並將有更動的資料加到MessageQueue上。
-				response.reply("總共搜尋到"+json_data.length+"筆商品資料。")
-				analyseSearchResult(json_data, keywords);
-			}
-			if(error)
-			{
-				response.reply("搜尋中出了點錯誤！\n"+error);
-				// end the flow
-			}
-		});
+		response.reply("好的！開始搜尋「"+keywords+"」！\n若有新商品將會通知。(無通知即是無變更資訊)");
+		shopeeCrawler(keywords);
     });
 	
 	//加入一筆資料到追蹤清單中，並觸發背景deepSearch取得當下最新資料存到Database當中
@@ -86,6 +70,8 @@ module.exports = function(robot)
 		
 		
     });
+
+	followItemsCronJob(robot);
 }
 
 //新增一筆資料到追蹤清單中
@@ -188,7 +174,25 @@ function deleteSchedule(room, keywords)
 	connection.end();
 }
 
-//把查到的結果丟去新增，如果新增失敗就更新(代表裡面已經有這筆資料惹)
+function shopeeCrawler(keywords)
+{
+	//設定好搜尋的url
+	var url = crawler_url + '/shopeeCrawler?keywords='+keywords;
+	var encoded_url = encodeURI(url);
+	
+	//開始搜尋惹
+	request(encoded_url, function(error, res, body) 
+	{
+		if (!error && res.statusCode == 200) 
+		{
+			json_data = JSON.parse(body);
+			// 將拿到的最新結果進行分析與儲存，並將有更動的資料加到MessageQueue上。
+			analyseSearchResult(json_data, keywords);
+		}
+	});
+}
+
+//分析爬蟲爬到的結果，並把每筆資料丟進去跑！
 async function analyseSearchResult(data_json, keywords)
 {
 	for (i in data_json) 
@@ -420,4 +424,47 @@ async function itemInsertNotify(item_json)
 	{
 		pub.write(JSON.stringify(item_json), "utf-8");
 	});
+}
+
+//cronjob
+function followItemsCronJob(robot)
+{
+	//先拿到所有的schedule
+	var connection = mysql.createConnection({     
+		host     : db_server,       
+		user     : db_user,              
+		password : db_passwd,       
+		port: '3306',                   
+		database: db_name 
+	}); 
+	 
+	connection.connect();
+	 
+	var sql = 'SELECT DISTINCT keyword FROM schedule';
+	//查尋指令
+	connection.query(sql,function (err, result) {
+		if(err)
+		{
+			console.log('[SELECT ERROR] - ',err.message);
+			return;
+		}
+		 
+		console.log('----查詢所有的關鍵字，每個整點送出查詢。----');
+		var json_data = JSON.parse(JSON.stringify(result));
+		console.log(json_data);
+		
+		for(var i = 0;i < json_data.length; i++)
+		{
+			// schedule tasks / 每個整點都會執行此動作。
+			cron.schedule("00 00 * * * *", function(){
+				console.log("---------------------");
+				console.log("Running Cron Job");
+				robot.messageRoom("831516917", "整點到了！開始查詢！關鍵字："+json_data[i].keyword);
+				shopeeCrawler(json_data[i].keyword);
+			});
+		}
+		console.log('------------------------------------------------------------\n\n');  
+	});
+	 
+	connection.end();
 }
