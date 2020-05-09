@@ -47,7 +47,7 @@ function itemUpdateNotify(item_json, robot)
 	 
 	connection.connect();
 	 
-	var sql = 'SELECT * FROM keyword where link="'+item_json.link+'"';
+	var sql = 'SELECT DISTINCT keyword FROM keyword where link="'+item_json.link+'"';
 	//查尋指令
 	connection.query(sql,function (err, result) {
 		if(err)
@@ -90,7 +90,7 @@ function itemInsertNotify(item_json, robot)
 	 
 	connection.connect();
 	 
-	var sql = 'SELECT * FROM keyword where link="'+item_json.link+'"';
+	var sql = 'SELECT DISTINCT keyword FROM keyword where link="'+item_json.link+'"';
 	//查尋指令
 	connection.query(sql,function (err, result) {
 		if(err)
@@ -131,7 +131,7 @@ function findChannelAndSendNotify(robot, keyword, notify_content)
 	 
 	connection.connect();
 	 
-	var sql = 'SELECT * FROM schedule where keyword="'+keyword+'"';
+	var sql = 'SELECT DISTINCT room FROM schedule where keyword="'+keyword+'"';
 	//查尋指令
 	connection.query(sql,function (err, result) {
 		if(err)
