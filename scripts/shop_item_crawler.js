@@ -248,14 +248,14 @@ async function ifItemExist(item_json, keywords)
 		console.log("檢查完成。是否在資料庫內？：" + itemExistStatus);
 		
 		//若有在資料庫內，檢查是否有更動。
-		if(itemExistStatus)
+		if(itemExistStatus=="EXIST")
 		{
 			//如果不同
 			if(json_data[0]!=item_json)
 			{
 				itemExistStatus = "UPDATE";
 			}
-			else
+			else //相同就不要做事情！
 			{
 				itemExistStatus = "DO_NOTHING";
 			}
