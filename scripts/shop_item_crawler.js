@@ -355,7 +355,7 @@ async function ifKeywordExist(item_json, keywords)
 	var sql = 'SELECT * FROM keyword where link="'+item_json.link+'" and keyword="'+keywords+'"';
 	//查尋指令
 	connection.query(sql,function (err, result) {
-		var itemExistStatus = false;
+		var itemExistStatus = true;
 		if(err)
 		{
 			console.log('[SELECT ERROR] - ',err.message);
@@ -364,9 +364,21 @@ async function ifKeywordExist(item_json, keywords)
 		 
 		console.log('---檢查此Item是否包含此Keyword，若沒有就加進去。---');
 		console.log(result);  
-		var json_data = JSON.parse(JSON.stringify(result));
-		if(json_data.length == 0)
+		try{
+			var json_data = JSON.parse(JSON.stringify(result));
+			if(json_data.length == 0)
+			{
+				newKeywords(item_json, keywords);
+			}
+			else
+			{
+				itemExistStatus = false;
+			}
+		}
+		catch(e){
+			itemExistStatus = false;
 			newKeywords(item_json, keywords);
+		}
 		console.log("檢查完成。是否在資料庫內？：" + itemExistStatus);
 		console.log('--------------------------End Check-------------------------------\n\n');
 	});
