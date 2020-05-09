@@ -64,7 +64,7 @@ function itemUpdateNotify(item_json, robot)
 		{
 			bot_speaking = "你所追蹤的「" + json_data[i].keyword + "有件相關商品更新了！」\n";
 			bot_speaking += "商品名稱：" + item_json.name + "\n";
-			bot_speaking += "商品圖片：" + item_json.pic + "\n";
+			bot_speaking += "商品圖片：" + item_json.img + "\n";
 			bot_speaking += "商品價錢：" + item_json.price + "\n";
 			bot_speaking += "連結：" + item_json.link + "\n";
 			
@@ -105,7 +105,7 @@ function itemInsertNotify(item_json, robot)
 		{
 			bot_speaking = "你所追蹤的「" + json_data[i].keyword + "有一件新商品出現了！」\n";
 			bot_speaking += "商品名稱：" + item_json.name + "\n";
-			bot_speaking += "商品圖片：" + item_json.pic + "\n";
+			bot_speaking += "商品圖片：" + item_json.img + "\n";
 			bot_speaking += "商品價錢：" + item_json.price + "\n";
 			bot_speaking += "連結：" + item_json.link + "\n";
 			
