@@ -248,22 +248,27 @@ async function ifItemExist(item_json, keywords)
 		 
 		console.log('-----檢查Item是否在資料庫裡了，以link來判斷。-----');
 		console.log(result);  
-		var json_data = JSON.parse(JSON.stringify(result));
-		if(json_data.length > 0)
-			itemExistStatus = "EXIST";
-		
-		//若有在資料庫內，檢查是否有更動。
-		if(itemExistStatus=="EXIST")
-		{
-			//如果不同
-			if(json_data[0].price!=item_json.price)
+		try{
+			var json_data = JSON.parse(JSON.stringify(result));
+			if(json_data.length > 0)
+				itemExistStatus = "EXIST";
+			
+			//若有在資料庫內，檢查是否有更動。
+			if(itemExistStatus=="EXIST")
 			{
-				itemExistStatus = "UPDATE";
+				//如果不同
+				if(json_data[0].price!=item_json.price)
+				{
+					itemExistStatus = "UPDATE";
+				}
+				else //相同就不要做事情！
+				{
+					itemExistStatus = "DO_NOTHING";
+				}
 			}
-			else //相同就不要做事情！
-			{
-				itemExistStatus = "DO_NOTHING";
-			}
+		}
+		catch(e){
+			itemExistStatus = "DO_NOTHING";
 		}
 		console.log("檢查完成。Item資料庫動作：" + itemExistStatus);
 		
