@@ -201,13 +201,13 @@ async function analyseSearchResult(data_json, keywords)
 
 async function checkFunction(item_json, keywords, itemExistStatus)
 {
-	if(itemExistStatus==false)
+	if(itemExistStatus == "NOT_EXIST")
 	{
 		console.log("=====開始插入=====");
 		await newItem(item_json, keywords);
 		await itemInsertNotify(item_json);
 	}
-	else
+	else if(itemExistStatus == "UPDATE")
 	{
 		console.log("=====開始更新=====");
 		await updateItem(item_json, keywords);
@@ -233,19 +233,33 @@ async function ifItemExist(item_json, keywords)
 	var sql = 'SELECT * FROM item where link="'+item_json.link+'"';
 	//查尋指令
 	connection.query(sql,function (err, result) {
-		var itemExistStatus = false;
+		var itemExistStatus = "NOT_EXIST";
 		if(err)
 		{
 			console.log('[SELECT ERROR] - ',err.message);
-			itemExistStatus = false;
+			itemExistStatus = "NOT_EXIST";
 		}
 		 
 		console.log('-----檢查Item是否在資料庫裡了，以link來判斷。-----');
 		console.log(result);  
 		var json_data = JSON.parse(JSON.stringify(result));
 		if(json_data.length > 0)
-			itemExistStatus = true;
+			itemExistStatus = "EXIST";
 		console.log("檢查完成。是否在資料庫內？：" + itemExistStatus);
+		
+		//若有在資料庫內，檢查是否有更動。
+		if(itemExistStatus)
+		{
+			//如果不同
+			if(json_data[0]!=item_json)
+			{
+				itemExistStatus = "UPDATE";
+			}
+			else
+			{
+				itemExistStatus = "DO_NOTHING";
+			}
+		}
 		console.log('--------------------------End Check-------------------------------\n\n');
 		checkFunction(item_json, keywords, itemExistStatus);
 	});
