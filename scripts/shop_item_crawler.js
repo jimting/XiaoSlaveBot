@@ -13,7 +13,7 @@ var rabbitmq = require('rabbit.js').createContext(MQserver);
 //cron job
 var cron = require("node-cron");
 var cron_keyword_list = [];
-var cron_list = [];
+var cronjob;
 
 //request
 var request = require('request');
@@ -462,7 +462,7 @@ function followItemsCronJob(robot)
 			cron_keyword_list.push(keyword);
 		}
 		
-		var new_cron = cron.schedule("00 25 * * * *", function(){
+		cronjob = cron.schedule("00 00 * * * *", function(){
 				
 			for(var k = 0;k < cron_keyword_list.length;k++)
 			{
