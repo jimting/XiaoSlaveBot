@@ -68,7 +68,7 @@ function itemUpdateNotify(item_json, robot)
 			bot_speaking += "商品價錢：" + item_json.price + "\n";
 			bot_speaking += "連結：" + item_json.link + "\n";
 			
-			findChannelAndSendNotify(json_data[i].keyword, bot_speaking);
+			findChannelAndSendNotify(robot, json_data[i].keyword, bot_speaking);
 		}
 		console.log('------------------------------------------------------------\n\n');  
 	});
@@ -109,7 +109,7 @@ function itemInsertNotify(item_json, robot)
 			bot_speaking += "商品價錢：" + item_json.price + "\n";
 			bot_speaking += "連結：" + item_json.link + "\n";
 			
-			findChannelAndSendNotify(json_data[i].keyword, bot_speaking);
+			findChannelAndSendNotify(robot, json_data[i].keyword, bot_speaking);
 		}
 	});
 	 
@@ -117,7 +117,7 @@ function itemInsertNotify(item_json, robot)
 }
 
 //找出訂閱這個keyword的channel 給他們通知！
-function findChannelAndSendNotify(keyword, notify_content)
+function findChannelAndSendNotify(robot, keyword, notify_content)
 {
 	var connection = mysql.createConnection({     
 		host     : db_server,       
