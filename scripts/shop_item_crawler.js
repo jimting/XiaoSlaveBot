@@ -14,6 +14,7 @@ var rabbitmq = require('rabbit.js').createContext(MQserver);
 var cron = require("node-cron");
 var cron_keyword_list = [];
 var cron_list = [];
+
 //request
 var request = require('request');
 
@@ -459,15 +460,19 @@ function followItemsCronJob(robot)
 		{
 			var keyword = json_data[i].keyword;
 			cron_keyword_list.push(keyword);
-			// schedule tasks / 每個整點都會執行此動作。
-			var new_cron = cron.schedule("00 11 * * * *", function(){
-				console.log("---------------------");
-				console.log("Running Cron Job, keyword : " + cron_keyword_list[i]);
-				robot.messageRoom("831516917", "整點到了！開始查詢！關鍵字："+cron_keyword_list[i]);
-				shopeeCrawler(cron_keyword_list[i]);
-			});
-			cron_list.push(new_cron);
 		}
+		
+		var new_cron = cron.schedule("00 21 * * * *", function(){
+				
+			for(var k = 0;k < cron_keyword_list.length;k++)
+			{
+				// schedule tasks / 每個整點都會執行此動作。
+				console.log("---------------------");
+				console.log("Running Cron Job, keyword : " + cron_keyword_list[k]);
+				robot.messageRoom("831516917", "整點到了！開始查詢！關鍵字："+cron_keyword_list[k]);
+				shopeeCrawler(cron_keyword_list[k]);
+			}
+		});
 		console.log('------------------------------------------------------------\n\n');  
 	});
 	 
