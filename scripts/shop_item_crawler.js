@@ -429,7 +429,6 @@ async function itemUpdateNotify(item_json)
 	var pub = rabbitmq.socket('PUBLISH');
 	await pub.connect('itemUpdate', function() 
 	{
-		item_json.keyword = 
 		pub.write(JSON.stringify(item_json), "utf-8");
 	});
 }
