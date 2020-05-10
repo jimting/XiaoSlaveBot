@@ -427,6 +427,8 @@ async function itemUpdateNotify(item_json)
 {
 	console.log("### 觸發item更新通知 ###");
 	var pub = rabbitmq.socket('PUBLISH');
+	pub.setsockopt('expiration', 5 * 1000)
+	
 	await pub.connect('itemUpdate', function() 
 	{
 		pub.write(JSON.stringify(item_json), "utf-8");
@@ -438,6 +440,8 @@ async function itemInsertNotify(item_json)
 {
 	console.log("### 觸發itemt插入通知 ###");
 	var pub = rabbitmq.socket('PUBLISH');
+	pub.setsockopt('expiration', 5 * 1000)
+
 	await pub.connect('itemInsert', function() 
 	{
 		pub.write(JSON.stringify(item_json), "utf-8");
