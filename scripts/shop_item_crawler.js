@@ -306,10 +306,10 @@ async function newItem(item_json, keywords)
 		//console.log('INSERT ID:',result.insertId);        
 		console.log('INSERT ID:',result);        
 		console.log('--------------------------End Insert------------------------------\n\n');  
+		
+		newKeywords(item_json, keywords);
 	});
-	 
 	connection.end();
-	newKeywords(item_json, keywords);
 }
 
 //更新Item物件
