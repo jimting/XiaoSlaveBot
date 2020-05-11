@@ -227,7 +227,6 @@ async function checkFunction(item_json, keywords, itemExistStatus)
 		await updateItem(item_json, keywords);
 		await itemUpdateNotify(item_json);
 	}
-	await ifKeywordExist(item_json, keywords);
 	await new Promise(r => setTimeout(r, 50));
 }
 
@@ -282,6 +281,7 @@ async function ifItemExist(item_json, keywords)
 		
 		console.log('--------------------------End Check-------------------------------\n\n');
 		checkFunction(item_json, keywords, itemExistStatus);
+		ifKeywordExist(item_json, keywords);
 	});
 	connection.end();
 }
@@ -314,8 +314,6 @@ async function newItem(item_json, keywords)
 		//console.log('INSERT ID:',result.insertId);        
 		console.log('INSERT ID:',result);        
 		console.log('--------------------------End Insert------------------------------\n\n');  
-		
-		newKeywords(item_json, keywords);
 	});
 	connection.end();
 }
