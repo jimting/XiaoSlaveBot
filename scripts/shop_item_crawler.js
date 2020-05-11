@@ -41,7 +41,7 @@ module.exports = function(robot)
 		response.reply("追蹤「"+keywords+"」成功！之後每個整點將會為你查詢最新商品與任何價格變動趨勢。");
 		
 		//將追蹤動作加到資料庫的schedule之中
-		addSchedule(room, keywords);
+		addSchedule(robot, room, keywords);
     });
 	
 	//嗯？就列出清單，有問題嗎？
@@ -66,7 +66,7 @@ module.exports = function(robot)
 		var room = response.envelope.room;
 		
 		//我直接就不爽了 把他刪掉
-		deleteSchedule(room, keywords);
+		deleteSchedule(robot, room, keywords);
 		
 		response.reply("取消追蹤「"+keywords+"」成功。");
 		
@@ -77,7 +77,7 @@ module.exports = function(robot)
 }
 
 //新增一筆資料到追蹤清單中
-function addSchedule(room, keywords)
+function addSchedule(robot, room, keywords)
 {
 	var connection = mysql.createConnection({     
 		host     : db_server,       
@@ -103,6 +103,10 @@ function addSchedule(room, keywords)
 		//console.log('INSERT ID:',result.insertId);        
 		console.log('INSERT ID:',result);        
 		console.log('-----------------------------------------------------------------\n\n');  
+		
+		//reset cronjob
+		cronjob.stop();
+		followItemsCronJob(robot);
 	});
 	 
 	connection.end();
@@ -147,7 +151,7 @@ function getSchedule(room, robot)
 }
 
 //把一筆追蹤資料刪掉
-function deleteSchedule(room, keywords)
+function deleteSchedule(robot, room, keywords)
 {
 	var connection = mysql.createConnection({     
 		host     : db_server,       
@@ -171,6 +175,10 @@ function deleteSchedule(room, keywords)
 		console.log('--------------------------DELETE----------------------------');
 		console.log('DELETE affectedRows',result.affectedRows);
 		console.log('-----------------------------------------------------------------\n\n'); 
+		
+		//reset cronjob
+		cronjob.stop();
+		followItemsCronJob(robot);
 	});
 	 
 	connection.end();
@@ -427,7 +435,7 @@ async function itemUpdateNotify(item_json)
 {
 	console.log("### 觸發item更新通知 ###");
 	var pub = rabbitmq.socket('PUBLISH');
-	pub.setsockopt('expiration', 5 * 1000)
+	pub.setsockopt('expiration', 5 * 1000);
 	
 	await pub.connect('itemUpdate', function() 
 	{
@@ -440,7 +448,7 @@ async function itemInsertNotify(item_json)
 {
 	console.log("### 觸發itemt插入通知 ###");
 	var pub = rabbitmq.socket('PUBLISH');
-	pub.setsockopt('expiration', 5 * 1000)
+	pub.setsockopt('expiration', 5 * 1000);
 
 	await pub.connect('itemInsert', function() 
 	{
