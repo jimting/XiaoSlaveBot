@@ -495,7 +495,7 @@ function followItemsCronJob(robot)
 				// schedule tasks / 每個整點都會執行此動作。
 				console.log("---------------------");
 				console.log("Running Cron Job, keyword : " + cron_keyword_list[k]);
-				robot.messageRoom("831516917", "整點到了！開始查詢！關鍵字："+cron_keyword_list[k]);
+				//robot.messageRoom("831516917", "整點到了！開始查詢！關鍵字："+cron_keyword_list[k]);
 				shopeeCrawler(cron_keyword_list[k]);
 			}
 		});
