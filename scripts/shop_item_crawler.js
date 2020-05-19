@@ -301,8 +301,8 @@ async function newItem(item_json, keywords)
 	 
 	connection.connect();
 
-	var  addSql = 'INSERT INTO item(name, link, img, price, monthly_revenue, review, ad) VALUES(?, ?, ?, ?, ?, ?, ?)';
-	var  addSqlParams = [item_json.name, item_json.link, item_json.img, item_json.price, item_json.monthly_revenue, item_json.review, item_json.ad];
+	var  addSql = 'INSERT INTO item(name, link, img, price, sales_volume, review, ad) VALUES(?, ?, ?, ?, ?, ?, ?)';
+	var  addSqlParams = [item_json.name, item_json.link, item_json.img, item_json.price, item_json.sales_volume, item_json.review, item_json.ad];
 	// 新增Schedule內容
 	await connection.query(addSql,addSqlParams,function (err, result) {
 		if(err)
@@ -333,8 +333,8 @@ async function updateItem(item_json, keywords)
 	 
 	connection.connect();
 	 
-	var modSql = 'UPDATE item SET name=?, img=?, price=?, monthly_revenue=?, review=?, ad=? where link=?';
-	var modSqlParams = [item_json.name, item_json.img, item_json.price, item_json.monthly_revenue, item_json.review, item_json.ad, item_json.link];
+	var modSql = 'UPDATE item SET name=?, img=?, price=?, sales_volume=?, review=?, ad=? where link=?';
+	var modSqlParams = [item_json.name, item_json.img, item_json.price, item_json.sales_volume, item_json.review, item_json.ad, item_json.link];
 	//查尋指令
 	await connection.query(modSql, modSqlParams,function (err, result) {
 		if(err)
