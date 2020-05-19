@@ -220,13 +220,13 @@ async function checkFunction(item_json, keywords, itemExistStatus)
 	{
 		console.log("=====開始插入=====");
 		await newItem(item_json, keywords);
-		await itemInsertNotify(item_json);
+		await itemInsertNotify(item_json, keywords);
 	}
 	else if(itemExistStatus == "UPDATE")
 	{
 		console.log("=====開始更新=====");
 		await updateItem(item_json, keywords);
-		await itemUpdateNotify(item_json);
+		await itemUpdateNotify(item_json, keywords);
 	}
 	await new Promise(r => setTimeout(r, 50));
 }
@@ -430,12 +430,12 @@ async function newKeywords(item_json, keywords)
 }
 
 //推通知訊息到MessageQueue
-async function itemUpdateNotify(item_json)
+async function itemUpdateNotify(item_json, keywords)
 {
 	console.log("### 觸發item更新通知 ###");
 	var pub = rabbitmq.socket('PUBLISH');
 	pub.setsockopt('expiration', 5 * 1000);
-	
+	item_json.keywords = keywords;
 	await pub.connect('itemUpdate', function() 
 	{
 		pub.write(JSON.stringify(item_json), "utf-8");
@@ -443,12 +443,12 @@ async function itemUpdateNotify(item_json)
 }
 
 //推通知訊息到MessageQueue
-async function itemInsertNotify(item_json)
+async function itemInsertNotify(item_json, keywords)
 {
 	console.log("### 觸發itemt插入通知 ###");
 	var pub = rabbitmq.socket('PUBLISH');
 	pub.setsockopt('expiration', 5 * 1000);
-
+	item_json.keywords = keywords;
 	await pub.connect('itemInsert', function() 
 	{
 		pub.write(JSON.stringify(item_json), "utf-8");

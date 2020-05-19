@@ -38,85 +38,27 @@ module.exports = function(robot)
 //利用商品的Link找到此商品的所有Keyword，並將更新資訊推給schedule內有訂閱這些keyword的頻道
 function itemUpdateNotify(item_json, robot)
 {
-	var connection = mysql.createConnection({     
-		host     : db_server,       
-		user     : db_user,              
-		password : db_passwd,       
-		port: db_port,                   
-		database: db_name 
-	}); 
-	 
-	connection.connect();
-	 
-	var sql = 'SELECT DISTINCT keyword FROM keyword where link="'+item_json.link+'"';
-	//查尋指令
-	connection.query(sql,function (err, result) {
-		if(err)
-		{
-			console.log('[SELECT ERROR] - ',err.message);
-			return;
-		}
-		 
-		console.log('---利用商品的Link找到此商品的所有Keyword，並將更新資訊推給schedule內有訂閱這些keyword的頻道---');
-		var json_data = JSON.parse(JSON.stringify(result));
-		console.log(json_data);
-		var bot_speaking = "";
-		for(var i = 0;i < json_data.length; i++)
-		{
-			bot_speaking = "";
-			bot_speaking += "你所追蹤的「" + json_data[i].keyword + "」有件相關商品更新了！\n";
-			bot_speaking += "商品名稱：" + item_json.name + "\n";
-			bot_speaking += "商品圖片：" + item_json.img + "\n";
-			bot_speaking += "商品價錢：" + item_json.price + "\n";
-			bot_speaking += "連結：" + item_json.link + "\n";
+	var bot_speaking = "";
+	bot_speaking += "你所追蹤的「" + item_json.keywords + "」有件相關商品更新了！\n";
+	bot_speaking += "商品名稱：" + item_json.name + "\n";
+	bot_speaking += "商品圖片：" + item_json.img + "\n";
+	bot_speaking += "商品價錢：" + item_json.price + "\n";
+	bot_speaking += "連結：" + item_json.link + "\n";
 			
-			findChannelAndSendNotify(robot, json_data[i].keyword, bot_speaking);
-		}
-		console.log('------------------------------------------------------------\n\n');  
-	});
-	 
-	connection.end();
+	findChannelAndSendNotify(robot, item_json.keywords, bot_speaking);
 }
 
 //利用商品的Link找到此商品的所有Keyword，並將新物品資訊推給schedule內有訂閱這些keyword的頻道
 function itemInsertNotify(item_json, robot)
 {
-	var connection = mysql.createConnection({     
-		host     : db_server,       
-		user     : db_user,              
-		password : db_passwd,       
-		port: db_port,                   
-		database: db_name 
-	}); 
-	 
-	connection.connect();
-	 
-	var sql = 'SELECT DISTINCT keyword FROM keyword where link="'+item_json.link+'"';
-	//查尋指令
-	connection.query(sql,function (err, result) {
-		if(err)
-		{
-			console.log('[SELECT ERROR] - ',err.message);
-			return;
-		}
-		console.log('---利用商品的Link找到此商品的所有Keyword，並將新物品資訊推給schedule內有訂閱這些keyword的頻道---');
-		var json_data = JSON.parse(JSON.stringify(result));
-		console.log(json_data);
-		var bot_speaking = "";
-		for(var i = 0;i < json_data.length; i++)
-		{
-			bot_speaking = "";
-			bot_speaking += "你所追蹤的「" + json_data[i].keyword + "」有一件新商品出現了！\n";
-			bot_speaking += "商品名稱：" + item_json.name + "\n";
-			bot_speaking += "商品圖片：" + item_json.img + "\n";
-			bot_speaking += "商品價錢：" + item_json.price + "\n";
-			bot_speaking += "連結：" + item_json.link + "\n";
+	var bot_speaking = "";
+	bot_speaking += "你所追蹤的「" + item_json.keywords + "」有一件新商品出現了！\n";
+	bot_speaking += "商品名稱：" + item_json.name + "\n";
+	bot_speaking += "商品圖片：" + item_json.img + "\n";
+	bot_speaking += "商品價錢：" + item_json.price + "\n";
+	bot_speaking += "連結：" + item_json.link + "\n";
 			
-			findChannelAndSendNotify(robot, json_data[i].keyword, bot_speaking);
-		}
-	});
-	 
-	connection.end();
+	findChannelAndSendNotify(robot, item_json.keywords, bot_speaking);
 }
 
 //找出訂閱這個keyword的channel 給他們通知！
