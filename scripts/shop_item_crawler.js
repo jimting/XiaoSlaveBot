@@ -438,7 +438,7 @@ async function itemUpdateNotify(item_json)
 	
 	await pub.connect('itemUpdate', function() 
 	{
-		setTimeout(pubWrite(pub, item_json), 1000);
+		pub.write(JSON.stringify(item_json), "utf-8");
 	});
 }
 
@@ -451,13 +451,8 @@ async function itemInsertNotify(item_json)
 
 	await pub.connect('itemInsert', function() 
 	{
-		setTimeout(pubWrite(pub, item_json),1000);
+		pub.write(JSON.stringify(item_json), "utf-8");
 	});
-}
-
-function pubWrite(pub, item_json)
-{
-	pub.write(JSON.stringify(item_json), "utf-8");
 }
 
 //cronjob
