@@ -489,7 +489,7 @@ function followItemsCronJob(robot)
 			cron_keyword_list.push(keyword);
 		}
 		
-		cronjob = cron.schedule("00 00 * * * *", function(){
+		cronjob = cron.schedule("00 16 * * * *", function(){
 				
 			for(var k = 0;k < cron_keyword_list.length;k++)
 			{
