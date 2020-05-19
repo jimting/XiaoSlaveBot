@@ -1,6 +1,7 @@
 // Database's setting
 var mysql  = require('mysql');
 var db_server = process.env.db_server;
+var db_port = process.env.db_port;
 var db_user = process.env.db_user;
 var db_passwd = process.env.db_passwd;
 var db_name = process.env.db_name;
@@ -83,7 +84,7 @@ function addSchedule(robot, room, keywords)
 		host     : db_server,       
 		user     : db_user,              
 		password : db_passwd,       
-		port: '3306',                   
+		port: db_port,                   
 		database: db_name
 	}); 
 	 
@@ -119,7 +120,7 @@ function getSchedule(room, robot)
 		host     : db_server,       
 		user     : db_user,              
 		password : db_passwd,       
-		port: '3306',                   
+		port: db_port,                   
 		database: db_name 
 	}); 
 	 
@@ -157,7 +158,7 @@ function deleteSchedule(robot, room, keywords)
 		host     : db_server,       
 		user     : db_user,              
 		password : db_passwd,       
-		port: '3306',                   
+		port: db_port,                   
 		database: db_name 
 	}); 
 	 
@@ -237,7 +238,7 @@ async function ifItemExist(item_json, keywords)
 		host     : db_server,       
 		user     : db_user,              
 		password : db_passwd,       
-		port: '3306',                   
+		port: db_port,                   
 		database: db_name 
 	}); 
 	 
@@ -294,7 +295,7 @@ async function newItem(item_json, keywords)
 		host     : db_server,       
 		user     : db_user,              
 		password : db_passwd,       
-		port: '3306',                   
+		port: db_port,                   
 		database: db_name
 	}); 
 	 
@@ -326,7 +327,7 @@ async function updateItem(item_json, keywords)
 		host     : db_server,       
 		user     : db_user,              
 		password : db_passwd,       
-		port: '3306',                   
+		port: db_port,                   
 		database: db_name 
 	}); 
 	 
@@ -357,7 +358,7 @@ async function ifKeywordExist(item_json, keywords)
 		host     : db_server,       
 		user     : db_user,              
 		password : db_passwd,       
-		port: '3306',                   
+		port: db_port,                   
 		database: db_name 
 	}); 
 	 
@@ -403,7 +404,7 @@ async function newKeywords(item_json, keywords)
 		host     : db_server,       
 		user     : db_user,              
 		password : db_passwd,       
-		port: '3306',                   
+		port: db_port,                   
 		database: db_name
 	}); 
 	 
@@ -462,7 +463,7 @@ function followItemsCronJob(robot)
 		host     : db_server,       
 		user     : db_user,              
 		password : db_passwd,       
-		port: '3306',                   
+		port: db_port,                   
 		database: db_name 
 	}); 
 	 
