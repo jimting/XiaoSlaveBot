@@ -496,10 +496,10 @@ function followItemsCronJob(robot)
 				// schedule tasks / 每個整點都會執行此動作。
 				console.log("---------------------");
 				console.log("Running Cron Job, keyword : " + cron_keyword_list[k]);
-				robot.messageRoom("831516917", "現在是整點了！開始查詢！關鍵字："+cron_keyword_list[k]);
+				robot.messageRoom("831516917", Date.now()+" | 現在是整點了！開始查詢！關鍵字："+cron_keyword_list[k]);
 				shopeeCrawler(cron_keyword_list[k]);
 				setTimeout(doNothing(), 100000);
-				robot.messageRoom("831516917", "我剛等待完啦ㄏㄏ，繼續查詢惹。");
+				robot.messageRoom("831516917", Date.now()+" | 我剛等待完啦ㄏㄏ，繼續查詢惹。");
 				//這邊要等一下，讓動作順利做完。
 			}
 		});
