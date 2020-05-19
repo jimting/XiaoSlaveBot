@@ -301,7 +301,7 @@ async function newItem(item_json, keywords)
 	 
 	connection.connect();
 
-	var  addSql = 'INSERT INTO item(name, link, img, price, monthly_revenue, review, ad) VALUES(?, ?, ?, ?, ?, ?, ?, ?)';
+	var  addSql = 'INSERT INTO item(name, link, img, price, monthly_revenue, review, ad) VALUES(?, ?, ?, ?, ?, ?, ?)';
 	var  addSqlParams = [item_json.name, item_json.link, item_json.img, item_json.price, item_json.monthly_revenue, item_json.review, item_json.ad];
 	// 新增Schedule內容
 	await connection.query(addSql,addSqlParams,function (err, result) {
