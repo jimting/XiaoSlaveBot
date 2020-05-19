@@ -498,10 +498,16 @@ function followItemsCronJob(robot)
 				console.log("Running Cron Job, keyword : " + cron_keyword_list[k]);
 				//robot.messageRoom("831516917", "整點到了！開始查詢！關鍵字："+cron_keyword_list[k]);
 				shopeeCrawler(cron_keyword_list[k]);
+				setTimeout(doNothing(), 5000);
+				//這邊要等一下，讓動作順利做完。
 			}
 		});
 		console.log('------------------------------------------------------------\n\n');  
 	});
 	 
 	connection.end();
+}
+function doNothing()
+{
+	//do Nothing Haha
 }
