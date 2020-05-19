@@ -489,7 +489,7 @@ function followItemsCronJob(robot)
 			cron_keyword_list.push(keyword);
 		}
 		
-		cronjob = cron.schedule("00 34 * * * *", function(){
+		cronjob = cron.schedule("00 40 * * * *", function(){
 				
 			startCronSearch(robot, cron_keyword_list, 0);
 		});
@@ -503,7 +503,7 @@ function startCronSearch(robot, cron_keyword_list, k) {
   setTimeout(function() {
     console.log("---------------------");
 	console.log("Running Cron Job, keyword : " + cron_keyword_list[k]);
-	robot.messageRoom("831516917", Date.now()+" | 現在是整點了！開始查詢！關鍵字："+cron_keyword_list[k]);
+	robot.messageRoom("831516917", Date.now()+" | 開始查詢！關鍵字："+cron_keyword_list[k]);
 	shopeeCrawler(cron_keyword_list[k]); 
     if (k < cron_keyword_list.length) {           
       myLoop(robot, cron_keyword_list, k+1); 
