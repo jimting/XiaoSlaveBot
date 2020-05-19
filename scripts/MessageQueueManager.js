@@ -1,6 +1,7 @@
 // Database's setting
 var mysql  = require('mysql');
 var db_server = process.env.db_server;
+var db_port = process.env.db_port;
 var db_user = process.env.db_user;
 var db_passwd = process.env.db_passwd;
 var db_name = process.env.db_name;
@@ -41,7 +42,7 @@ function itemUpdateNotify(item_json, robot)
 		host     : db_server,       
 		user     : db_user,              
 		password : db_passwd,       
-		port: '3306',                   
+		port: db_port,                   
 		database: db_name 
 	}); 
 	 
@@ -84,7 +85,7 @@ function itemInsertNotify(item_json, robot)
 		host     : db_server,       
 		user     : db_user,              
 		password : db_passwd,       
-		port: '3306',                   
+		port: db_port,                   
 		database: db_name 
 	}); 
 	 
@@ -125,7 +126,7 @@ function findChannelAndSendNotify(robot, keyword, notify_content)
 		host     : db_server,       
 		user     : db_user,              
 		password : db_passwd,       
-		port: '3306',                   
+		port: db_port,                   
 		database: db_name 
 	}); 
 	 
