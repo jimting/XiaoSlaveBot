@@ -239,7 +239,8 @@ async function ifItemExist(item_json, keywords)
 		user     : db_user,              
 		password : db_passwd,       
 		port: db_port,                   
-		database: db_name 
+		database: db_name,
+		charset : 'utf8mb4' 
 	}); 
 	 
 	connection.connect();
@@ -296,7 +297,8 @@ async function newItem(item_json, keywords)
 		user     : db_user,              
 		password : db_passwd,       
 		port: db_port,                   
-		database: db_name
+		database: db_name,
+		charset : 'utf8mb4'
 	}); 
 	 
 	connection.connect();
@@ -328,7 +330,8 @@ async function updateItem(item_json, keywords)
 		user     : db_user,              
 		password : db_passwd,       
 		port: db_port,                   
-		database: db_name 
+		database: db_name,
+		charset : 'utf8mb4' 
 	}); 
 	 
 	connection.connect();
@@ -359,7 +362,8 @@ async function ifKeywordExist(item_json, keywords)
 		user     : db_user,              
 		password : db_passwd,       
 		port: db_port,                   
-		database: db_name 
+		database: db_name,
+		charset : 'utf8mb4'
 	}); 
 	 
 	connection.connect();
@@ -405,7 +409,8 @@ async function newKeywords(item_json, keywords)
 		user     : db_user,              
 		password : db_passwd,       
 		port: db_port,                   
-		database: db_name
+		database: db_name,
+		charset : 'utf8mb4'
 	}); 
 	 
 	connection.connect();
@@ -464,7 +469,8 @@ function followItemsCronJob(robot)
 		user     : db_user,              
 		password : db_passwd,       
 		port: db_port,                   
-		database: db_name 
+		database: db_name,
+		charset : 'utf8mb4'
 	}); 
 	 
 	connection.connect();
@@ -489,7 +495,7 @@ function followItemsCronJob(robot)
 			cron_keyword_list.push(keyword);
 		}
 		
-		cronjob = cron.schedule("00 00 * * * *", function(){
+		cronjob = cron.schedule("00 00 * * * *", function(){ 
 				
 			startCronSearch(robot, cron_keyword_list, 0);
 		});
