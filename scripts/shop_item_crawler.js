@@ -198,13 +198,13 @@ function shopeeCrawler(keywords)
 		{
 			json_data = JSON.parse(body);
 			// 將拿到的最新結果進行分析與儲存，並將有更動的資料加到MessageQueue上。
-			analyseSearchResult(json_data, keywords);
+			analyseSearchResult(json_data, keywords, 0);
 		}
 	});
 }
 
 //分析爬蟲爬到的結果，並把每筆資料丟進去跑！
-async function analyseSearchResult(data_json, keywords)
+/*async function analyseSearchResult(data_json, keywords)
 {
 	for (i in data_json) 
 	{
@@ -212,8 +212,20 @@ async function analyseSearchResult(data_json, keywords)
 		if(data_json[i].link != "https://shopee.tw/")
 			await ifItemExist(data_json[i], keywords);
 	} 
+}*/
+
+function analyseSearchResult(data_json, keywords, k) 
+{
+	setTimeout(function() 
+	{
+		if(data_json[k].link != "https://shopee.tw/")
+			ifItemExist(data_json[k], keywords);
+		if (k < data_json.length-1) 
+			analyseSearchResult(data_json, keywords, k); 
+	}, 100);
 }
 
+// check whether the item is in the db
 async function checkFunction(item_json, keywords, itemExistStatus)
 {
 	if(itemExistStatus == "NOT_EXIST")
