@@ -222,7 +222,7 @@ function analyseSearchResult(data_json, keywords, k)
 			ifItemExist(data_json[k], keywords);
 		if (k < data_json.length-1) 
 			analyseSearchResult(data_json, keywords, k); 
-	}, 100);
+	}, 1000);
 }
 
 // check whether the item is in the db
