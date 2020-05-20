@@ -221,7 +221,7 @@ function analyseSearchResult(data_json, keywords, k)
 		if(data_json[k].link != "https://shopee.tw/")
 			ifItemExist(data_json[k], keywords);
 		if (k < data_json.length-1) 
-			analyseSearchResult(data_json, keywords, k); 
+			analyseSearchResult(data_json, keywords, k+1); 
 	}, 1000);
 }
 
