@@ -520,5 +520,5 @@ function startCronSearch(robot, cron_keyword_list, k) {
     if (k < cron_keyword_list.length-1) {           
       startCronSearch(robot, cron_keyword_list, k+1); 
     }
-  }, 200000)
+  }, 150000)
 }
